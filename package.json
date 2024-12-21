@@ -9,17 +9,39 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@mantine/carousel": "^7.15.1",
+    "@mantine/charts": "^7.15.1",
+    "@mantine/code-highlight": "^7.15.1",
+    "@mantine/core": "^7.15.1",
+    "@mantine/dates": "^7.15.1",
+    "@mantine/dropzone": "^7.15.1",
+    "@mantine/form": "^7.15.1",
+    "@mantine/hooks": "^7.15.1",
+    "@mantine/modals": "^7.15.1",
+    "@mantine/notifications": "^7.15.1",
+    "@mantine/nprogress": "^7.15.1",
+    "@mantine/spotlight": "^7.15.1",
+    "@mantine/tiptap": "^7.15.1",
+    "@tiptap/extension-link": "^2.10.4",
+    "@tiptap/pm": "^2.10.4",
+    "@tiptap/react": "^2.10.4",
+    "@tiptap/starter-kit": "^2.10.4",
+    "clsx": "^2.1.1",
+    "dayjs": "^1.11.13",
+    "embla-carousel-react": "^8.5.1",
+    "next": "15.1.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.1.2"
+    "recharts": "^2.15.0"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/eslintrc": "^3",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "15.1.2",
-    "@eslint/eslintrc": "^3"
+    "postcss-preset-mantine": "^1.17.0",
+    "typescript": "^5"
   }
 }
