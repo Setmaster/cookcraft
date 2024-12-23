@@ -1,5 +1,5 @@
 ﻿# Generate migrations
-pnpm drizzle-kit generate
+npm drizzle-kit generate
 
 # Run migrations
-pnpm drizzle-kit migrate
+npm drizzle-kit migrate
