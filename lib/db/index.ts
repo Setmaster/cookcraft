@@ -4,6 +4,7 @@ import { usersTable } from './schema';
 import { recipesTable } from './schema';
 import {eq} from "drizzle-orm";
 import { validateString } from '@/utils/indexHelpers'
+import logger from '@/utils/logger';
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -27,7 +28,7 @@ export async function seedUsers() {
             }
         });
 
-        console.log('Users have been seeded successfully.');
+        logger.info('Users have been seeded successfully.');
     } catch (error) {
         console.error('Error seeding users:', error);
     }
@@ -42,7 +43,7 @@ export async function insertNewUser(name: string, email: string, password: strin
         await trx.insert(usersTable).values(user);
         });
 
-        console.log('User has been added successfully.');
+        logger.info('User has been added successfully.');
     } catch (error) {
         console.error('Error adding users:', error);
     }
@@ -52,7 +53,7 @@ export async function getAllUsers() {
     try {
         // Select all users from the usersTable
         const users = await db.select().from(usersTable);
-        console.log('Retrieved users:', users);
+        logger.info('Retrieved users:', users);
         return users;
     } catch (error) {
         console.error('Error retrieving users:', error);
@@ -74,9 +75,9 @@ export async function updateUser(userId: number,newName: string, newPassword: st
                 await trx.update(usersTable)
                     .set({ name: validName , password: validPassword})
                     .where(eq(usersTable.id, userId));  // Use the eq function
-                console.log(`User updated.`);
+                logger.info(`User updated.`);
             } else {
-                console.log('No user found to update.');
+                logger.info('No user found to update.');
             }
         });
     } catch (error) {
@@ -90,7 +91,7 @@ export async function deleteAllUsers() {
         // Delete all users from the usersTable
         await db.delete(usersTable);
 
-        console.log('All users have been deleted successfully.');
+        logger.info('All users have been deleted successfully.');
     } catch (error) {
         console.error('Error deleting users:', error);
         throw error;  // Re-throw error after logging
@@ -101,7 +102,7 @@ export async function deleteUser(userId: number) {
     try {
         await db.delete(usersTable).where(eq(usersTable.id, userId));
 
-        console.log('User has been deleted successfully.');
+        logger.info('User has been deleted successfully.');
     } catch (error) {
         console.error('Error deleting user:', error);
         throw error;  // Re-throw error after logging
@@ -119,7 +120,7 @@ export async function insertNewRecipe(name: string, ingredients: string, userId:
         await trx.insert(recipesTable).values(recipe);
         });
 
-        console.log('recipe has been added successfully.');
+        logger.info('recipe has been added successfully.');
     } catch (error) {
         console.error('Error adding recipe:', error);
     }
@@ -129,7 +130,7 @@ export async function deleteRecipe(recipeId: number) {
     try {
         await db.delete(recipesTable).where(eq(recipesTable.id, recipeId));
 
-        console.log('Recipe has been deleted successfully.');
+        logger.info('Recipe has been deleted successfully.');
     } catch (error) {
         console.error('Error deleting recipe:', error);
         throw error;  // Re-throw error after logging
@@ -150,9 +151,9 @@ export async function updateRecipe(recipeId: number,newName: string, newIngredie
                 await trx.update(recipesTable)
                     .set({ name: validName , ingredients: validIngredients})
                     .where(eq(recipesTable.id, recipeId));  // Use the eq function
-                console.log(`Recipe updated.`);
+                logger.info(`Recipe updated.`);
             } else {
-                console.log('No recipe found to update.');
+                logger.info('No recipe found to update.');
             }
         });
     } catch (error) {
