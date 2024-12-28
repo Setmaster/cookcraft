@@ -3,6 +3,7 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { usersTable } from './schema';
 import { recipesTable } from './schema';
 import {eq} from "drizzle-orm";
+import { validateString } from '@/utils/indexHelpers'
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -66,8 +67,8 @@ export async function updateUser(userId: number,newName: string, newPassword: st
             // Find the first user
             const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
 
-            const validName =  newName === null || newName === undefined || newName === "" ? user.name : newName;
-            const validPassword =  newPassword === null || newPassword === undefined || newPassword === "" ? user.password : newPassword;
+            const validName = validateString(newName,user.name);
+            const validPassword =   validateString(newPassword,user.password); 
 
             if (user) {
                 await trx.update(usersTable)
@@ -141,9 +142,9 @@ export async function updateRecipe(recipeId: number,newName: string, newIngredie
         await db.transaction(async (trx) => {
             // Find the first user
             const [recipe] = await trx.select().from(recipesTable).where(eq(recipesTable.id, recipeId));
-
-            const validName =  newName === null || newName === undefined || newName === "" ? recipe.name : newName;
-            const validIngredients =  newIngredients === null || newIngredients === undefined || newIngredients === "" ? recipe.ingredients : newIngredients;
+            
+            const validName = validateString(newName,recipe.name);
+            const validIngredients = validateString(newIngredients,recipe.ingredients);
 
             if (recipe) {
                 await trx.update(recipesTable)
