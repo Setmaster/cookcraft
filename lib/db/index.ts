@@ -29,6 +29,21 @@ export async function seedUsers() {
     }
 }
 
+export async function insertNewUser(name: string, email: string, password: string) {
+    const user = { name: name, email: email, password: password };
+
+    try {
+        // Begin a transaction
+        await db.transaction(async (trx) => {
+        await trx.insert(usersTable).values(user);
+        });
+
+        console.log('User has been added successfully.');
+    } catch (error) {
+        console.error('Error adding users:', error);
+    }
+}
+
 export async function getAllUsers() {
     try {
         // Select all users from the usersTable
@@ -41,19 +56,42 @@ export async function getAllUsers() {
     }
 }
 
-export async function updateFirstUserAge(newAge: number) {
+export async function updateUserName(userId: number,newName: string) {
     try {
         // Start a transaction
         await db.transaction(async (trx) => {
             // Find the first user
-            const [firstUser] = await trx.select().from(usersTable).limit(1);
+            const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
 
-            if (firstUser) {
+            if (user) {
                 // Update the age of the first user
                 await trx.update(usersTable)
-                    .set({ age: newAge })
-                    .where(eq(usersTable.id, firstUser.id));  // Use the eq function
-                console.log(`Updated age for user ${firstUser.name} to ${newAge}.`);
+                    .set({ name: newName })
+                    .where(eq(usersTable.id, userId));  // Use the eq function
+                console.log(`Updated name for user ${user.name} to ${newName}.`);
+            } else {
+                console.log('No users found to update.');
+            }
+        });
+    } catch (error) {
+        console.error('Error updating user age:', error);
+        throw error;  // Re-throw error after logging
+    }
+}
+
+export async function updateUserPassword(userId: number,password: string) {
+    try {
+        // Start a transaction
+        await db.transaction(async (trx) => {
+            // Find the first user
+            const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
+
+            if (user) {
+                // Update the age of the first user
+                await trx.update(usersTable)
+                    .set({ password: password })
+                    .where(eq(usersTable.id, userId));  // Use the eq function
+                console.log(`Updated password for user ${user.name}.`);
             } else {
                 console.log('No users found to update.');
             }
@@ -72,6 +110,18 @@ export async function deleteAllUsers() {
         console.log('All users have been deleted successfully.');
     } catch (error) {
         console.error('Error deleting users:', error);
+        throw error;  // Re-throw error after logging
+    }
+}
+
+export async function deleteUser(userId: number) {
+    try {
+        // Delete all users from the usersTable
+        await db.delete(usersTable).where(eq(usersTable.id, userId));
+
+        console.log('User has been deleted successfully.');
+    } catch (error) {
+        console.error('Error deleting user:', error);
         throw error;  // Re-throw error after logging
     }
 }
