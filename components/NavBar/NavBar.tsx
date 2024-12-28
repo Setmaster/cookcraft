@@ -29,6 +29,7 @@ import {
 } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import classes from './NavBar.module.css';
+import LoginModal from "@/components/Authentication/LoginModal";
 
 const mockdata = [
     {
@@ -105,7 +106,7 @@ export function NavBar() {
                     </Group>
 
                     <Group visibleFrom="sm">
-                        <Button variant="default">Log in</Button>
+                        <LoginModal/>
                         <Button>Sign up</Button>
                     </Group>
 
@@ -128,21 +129,8 @@ export function NavBar() {
                     <a href="#" className={classes.link}>
                         Home
                     </a>
-                    <UnstyledButton className={classes.link} onClick={toggleLinks}>
-                        <Center inline>
-                            <Box component="span" mr={5}>
-                                Features
-                            </Box>
-                            <IconChevronDown size={16} color={theme.colors.blue[6]} />
-                        </Center>
-                    </UnstyledButton>
+
                     <Collapse in={linksOpened}>{links}</Collapse>
-                    <a href="#" className={classes.link}>
-                        Learn
-                    </a>
-                    <a href="#" className={classes.link}>
-                        Academy
-                    </a>
 
                     <Divider my="sm" />
 

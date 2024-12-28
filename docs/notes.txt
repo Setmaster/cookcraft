@@ -3,3 +3,6 @@ npm drizzle-kit generate
 
 # Run migrations
 npm drizzle-kit migrate
+
+# Quickly setup db
+npx drizzle-kit push
