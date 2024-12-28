@@ -66,9 +66,12 @@ export async function updateUser(userId: number,newName: string, newPassword: st
             // Find the first user
             const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
 
+            const validName =  newName === null || newName === undefined || newName === "" ? user.name : newName;
+            const validPassword =  newPassword === null || newPassword === undefined || newPassword === "" ? user.password : newPassword;
+
             if (user) {
                 await trx.update(usersTable)
-                    .set({ name: newName , password: newPassword})
+                    .set({ name: validName , password: validPassword})
                     .where(eq(usersTable.id, userId));  // Use the eq function
                 console.log(`User updated.`);
             } else {
@@ -139,9 +142,12 @@ export async function updateRecipe(recipeId: number,newName: string, newIngredie
             // Find the first user
             const [recipe] = await trx.select().from(recipesTable).where(eq(recipesTable.id, recipeId));
 
+            const validName =  newName === null || newName === undefined || newName === "" ? recipe.name : newName;
+            const validIngredients =  newIngredients === null || newIngredients === undefined || newIngredients === "" ? recipe.ingredients : newIngredients;
+
             if (recipe) {
                 await trx.update(recipesTable)
-                    .set({ name: newName , ingredients: newIngredients})
+                    .set({ name: validName , ingredients: validIngredients})
                     .where(eq(recipesTable.id, recipeId));  // Use the eq function
                 console.log(`Recipe updated.`);
             } else {
