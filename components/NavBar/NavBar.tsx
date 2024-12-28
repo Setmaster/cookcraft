@@ -88,14 +88,17 @@ export function NavBar() {
     ));
 
     return (
-        <Box pb={10}>
+        <Box pb={0}>
             <header className={classes.header}>
                 <Group justify="space-between" h="100%">
-                    
+
 
                     <Group h="100%" gap={0} visibleFrom="sm">
                         <a href="/" className={classes.link}>
                             Home
+                        </a>
+                        <a href="/recipes" className={classes.link}>
+                            Recipes
                         </a>
                         <a href="/faq" className={classes.link}>
                             FAQ
