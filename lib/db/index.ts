@@ -1,9 +1,12 @@
 ﻿import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { usersTable } from './schema';
+import { recipesTable } from './schema';
 import {eq} from "drizzle-orm";
 
 const db = drizzle(process.env.DATABASE_URL!);
+
+////////// Users
 
 export async function seedUsers() {
     // Sample user data
@@ -56,7 +59,7 @@ export async function getAllUsers() {
     }
 }
 
-export async function updateUserName(userId: number,newName: string) {
+export async function updateUser(userId: number,newName: string, newPassword: string) {
     try {
         // Start a transaction
         await db.transaction(async (trx) => {
@@ -64,36 +67,12 @@ export async function updateUserName(userId: number,newName: string) {
             const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
 
             if (user) {
-                // Update the age of the first user
                 await trx.update(usersTable)
-                    .set({ name: newName })
+                    .set({ name: newName , password: newPassword})
                     .where(eq(usersTable.id, userId));  // Use the eq function
-                console.log(`Updated name for user ${user.name} to ${newName}.`);
+                console.log(`User updated.`);
             } else {
-                console.log('No users found to update.');
-            }
-        });
-    } catch (error) {
-        console.error('Error updating user age:', error);
-        throw error;  // Re-throw error after logging
-    }
-}
-
-export async function updateUserPassword(userId: number,password: string) {
-    try {
-        // Start a transaction
-        await db.transaction(async (trx) => {
-            // Find the first user
-            const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
-
-            if (user) {
-                // Update the age of the first user
-                await trx.update(usersTable)
-                    .set({ password: password })
-                    .where(eq(usersTable.id, userId));  // Use the eq function
-                console.log(`Updated password for user ${user.name}.`);
-            } else {
-                console.log('No users found to update.');
+                console.log('No user found to update.');
             }
         });
     } catch (error) {
@@ -116,12 +95,61 @@ export async function deleteAllUsers() {
 
 export async function deleteUser(userId: number) {
     try {
-        // Delete all users from the usersTable
         await db.delete(usersTable).where(eq(usersTable.id, userId));
 
         console.log('User has been deleted successfully.');
     } catch (error) {
         console.error('Error deleting user:', error);
+        throw error;  // Re-throw error after logging
+    }
+}
+
+////// Recipes
+
+export async function insertNewRecipe(name: string, ingredients: string, userId: number) {
+    const recipe = { name: name, ingredients: ingredients, userId: userId };
+
+    try {
+        // Begin a transaction
+        await db.transaction(async (trx) => {
+        await trx.insert(recipesTable).values(recipe);
+        });
+
+        console.log('recipe has been added successfully.');
+    } catch (error) {
+        console.error('Error adding recipe:', error);
+    }
+}
+
+export async function deleteRecipe(recipeId: number) {
+    try {
+        await db.delete(recipesTable).where(eq(recipesTable.id, recipeId));
+
+        console.log('Recipe has been deleted successfully.');
+    } catch (error) {
+        console.error('Error deleting recipe:', error);
+        throw error;  // Re-throw error after logging
+    }
+}
+
+export async function updateRecipe(recipeId: number,newName: string, newIngredients: string ) {
+    try {
+        // Start a transaction
+        await db.transaction(async (trx) => {
+            // Find the first user
+            const [recipe] = await trx.select().from(recipesTable).where(eq(recipesTable.id, recipeId));
+
+            if (recipe) {
+                await trx.update(recipesTable)
+                    .set({ name: newName , ingredients: newIngredients})
+                    .where(eq(recipesTable.id, recipeId));  // Use the eq function
+                console.log(`Recipe updated.`);
+            } else {
+                console.log('No recipe found to update.');
+            }
+        });
+    } catch (error) {
+        console.error('Error updating user age:', error);
         throw error;  // Re-throw error after logging
     }
 }
