@@ -1,7 +1,10 @@
 ﻿'use client';
 
+import React from "react";
+import Listings from "@/components/Recipes/Listings";
+
 export default function RecipesPage() {
     return (
-        <h1>This is my recipes page</h1>
+        <Listings/>
     );
 }
