@@ -30,6 +30,8 @@ import {
 import { useDisclosure } from '@mantine/hooks';
 import classes from './NavBar.module.css';
 import LoginModal from "@/components/Authentication/LoginModal";
+import SignupModal from '../Authentication/SignupModal';
+
 
 const mockdata = [
     {
@@ -107,7 +109,7 @@ export function NavBar() {
 
                     <Group visibleFrom="sm">
                         <LoginModal/>
-                        <Button>Sign up</Button>
+                        <SignupModal/>
                     </Group>
 
                     <Burger opened={drawerOpened} onClick={toggleDrawer} hiddenFrom="sm" />
