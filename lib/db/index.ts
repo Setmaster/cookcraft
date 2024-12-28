@@ -8,9 +8,9 @@ const db = drizzle(process.env.DATABASE_URL!);
 export async function seedUsers() {
     // Sample user data
     const users = [
-        { name: 'Alice Smith', age: 30, email: 'alice@example.com' },
-        { name: 'Bob Johnson', age: 25, email: 'bob@example.com' },
-        { name: 'Carol Williams', age: 28, email: 'carol@example.com' },
+        { name: 'Alice Smith', email: 'alice@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.'  },
+        { name: 'Bob Johnson', email: 'bob@example.com' , password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
+        { name: 'Carol Williams', email: 'carol@example.com' , password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
     ];
 
     try {
