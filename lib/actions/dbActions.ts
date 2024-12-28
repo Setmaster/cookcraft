@@ -1,6 +1,6 @@
 ﻿'use server'
 
-import {getAllUsers, seedUsers, deleteAllUsers, updateFirstUserAge} from "@/lib/db";
+import {getAllUsers, seedUsers, deleteAllUsers} from "@/lib/db";
 
 function handleError(actionName: string, error: any) {
     console.error(`Error during ${actionName}:`, error);
@@ -22,15 +22,6 @@ export async function getAllUsersA() {
         return users;
     } catch (error) {
         handleError('retrieving users', error);
-    }
-}
-
-export async function updateFirstUserAgeA(newAge: number) {
-    try {
-        await updateFirstUserAge(newAge);
-        return { message: `First user's age updated to ${newAge} successfully` };
-    } catch (error) {
-        handleError('updating first user age', error);
     }
 }
 
