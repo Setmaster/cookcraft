@@ -1,10 +1,14 @@
 'use client';
 
+import {LandingHero} from "@/components/Landing/LandingHero";
+import {FeaturesCards} from "@/components/Landing/FeatureCards";
+
 export default function Home() {
 
-  return (
-      <main>
-        <h1>Welcome to CookCraft</h1>
-      </main>
-  );
+    return (
+        <div>
+            <LandingHero/>
+            <FeaturesCards/>
+        </div>
+    );
 }
