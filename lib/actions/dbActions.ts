@@ -1,12 +1,8 @@
 ﻿'use server'
-import logger from '@/utils/logger';
 import {getAllUsers, seedUsers, deleteAllUsers} from "@/lib/db";
 
 function handleError(actionName: string, error: any) {
-    logger.error('Error during ' + actionName, {
-        message: error,
-        additionalInfo: actionName
-      });
+    console.error(`Error during ${actionName}:`, error);
     throw new Error(`Error during ${actionName}`);
 }
 
