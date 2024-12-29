@@ -1,4 +1,4 @@
-﻿import { integer, pgTable, varchar } from "drizzle-orm/pg-core";
+﻿import { integer, pgTable, varchar, timestamp } from "drizzle-orm/pg-core";
 
 // users table
 export const usersTable = pgTable("users", {
@@ -14,5 +14,6 @@ export const recipesTable = pgTable("recipes", {
     name: varchar({ length: 255 }).notNull(),
     ingredients: varchar({ length: 255 }).notNull(),
     userId: integer("user_id").notNull().references(() => usersTable.id),
+    dateCreated: timestamp('date_created').defaultNow().notNull(),
 });
 
