@@ -1,43 +1,19 @@
-﻿import { ActionIcon, Card, Group, rem, useMantineTheme, Modal, Button, Text } from "@mantine/core";
+﻿import { Card, Modal, ScrollArea, TypographyStylesProvider } from "@mantine/core";
 import { useDisclosure } from '@mantine/hooks';
 import classes from './RecipeCard.module.css';
-import Link from "next/link";
 import RecipeImage from "@/components/RecipeCard/RecipeImage";
-import { IconShare } from "@tabler/icons-react";
-import { getAPPUrl } from "@/lib/actions/userActions";
+import {Recipe} from "@/lib/types/generalTypes";
 
-export default function RecipeCard() {
-    const theme = useMantineTheme();
+type RecipeCardProps = {
+    recipe: Recipe;
+};
+
+export default function RecipeCard({ recipe }: RecipeCardProps) {
     const [opened, { open, close }] = useDisclosure(false);
 
-    const handleShare = async (event: { stopPropagation: () => void; preventDefault: () => void; }) => {
-        event.stopPropagation(); // Prevent the Card link from being triggered
-        event.preventDefault(); // Stop the default behavior
-
-        const baseUrl = await getAPPUrl();
-        const shareLink = `${baseUrl}`;
-
-        if (navigator.share) {
-            try {
-                await navigator.share({
-                    title: 'Recipe Details',
-                    url: shareLink,
-                });
-            } catch (error) {
-                console.error('Error sharing link:', error);
-            }
-        } else {
-            try {
-                await navigator.clipboard.writeText(shareLink);
-            } catch (error) {
-                console.error('Error copying link:', error);
-            }
-        }
-    };
-
     const handleCardClick = (event: React.MouseEvent) => {
-        event.preventDefault();
-        open();
+        event.preventDefault(); // Prevent default navigation behavior
+        open(); // Open the modal
     };
 
     return (
@@ -48,7 +24,7 @@ export default function RecipeCard() {
                 radius="md"
                 className={classes.card}
                 onClick={handleCardClick}
-                component="div"
+                component="div" // Change Link component to div to stop navigation
             >
                 <Card.Section mb="sm">
                     <div className={classes.saleImageContainer}>
@@ -57,12 +33,44 @@ export default function RecipeCard() {
                 </Card.Section>
 
                 <Card.Section className={classes.footer}>
-                    <div className={classes.bottomText}>Recipe Name</div>
+                    <div className={classes.bottomText}>{recipe.Title}</div>
                 </Card.Section>
             </Card>
 
-            <Modal opened={opened} onClose={close} title="Recipe Title">
-                <Text>Recipe information</Text>
+            <Modal
+                opened={opened}
+                onClose={close}
+                title="Recipe Information"
+                size="lg"
+            >
+                <ScrollArea style={{ height: '70vh' }}>
+                    <TypographyStylesProvider>
+                        <div>
+                            <h1>{recipe.Title}</h1>
+                            <p>{recipe.Description}</p>
+                            <h2>Ingredients</h2>
+                            <ul>
+                                {recipe.Ingredients.map((ingredient, index) => (
+                                    <li key={index}>{ingredient}</li>
+                                ))}
+                            </ul>
+                            <h2>Instructions</h2>
+                            <ol>
+                                {recipe.Instructions.map((instruction, index) => (
+                                    <li key={index}>{instruction}</li>
+                                ))}
+                            </ol>
+                            {recipe.AdditionalInformation && (
+                                <div>
+                                    <h2>Additional Information</h2>
+                                    {Object.entries(recipe.AdditionalInformation).map(([key, value]) => (
+                                        value && <p key={key}><strong>{key}:</strong> {value}</p>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </TypographyStylesProvider>
+                </ScrollArea>
             </Modal>
         </>
     );

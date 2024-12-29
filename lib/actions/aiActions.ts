@@ -1,10 +1,10 @@
 ﻿"use server";
 
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
+import {GoogleGenerativeAI, SchemaType} from "@google/generative-ai";
 
 // Define the JSON schema for the recipe
-const recipeSchema = {
-    description: "Structured recipe format",
+const recipeDataSchema = {
+    description: "Structured recipe data format",
     type: SchemaType.OBJECT,
     properties: {
         Title: {
@@ -19,7 +19,7 @@ const recipeSchema = {
         },
         Ingredients: {
             type: SchemaType.ARRAY,
-            description: "List of ingredients with quantities",
+            description: "List of ingredients",
             items: {
                 type: SchemaType.STRING,
             },
@@ -72,24 +72,24 @@ const recipeSchema = {
 // Initialize AI using the API key
 const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
 
-export async function generateRecipeA(ingredientsList) {
+export async function generateRecipeData(ingredientsList) {
     try {
         // Get the generative model with the specified schema
         const model = genAI.getGenerativeModel({
             model: "gemini-1.5-flash",
             generationConfig: {
                 responseMimeType: "application/json",
-                responseSchema: recipeSchema,
+                responseSchema: recipeDataSchema,
             },
         });
-        
+
         // Define the prompt with instructions
         const prompt = `
-Using the following list of ingredients, create a recipe that includes these ingredients. The recipe should be structured in JSON format matching the provided schema. Ensure the recipe is detailed and follows the standard format.
+Using the following list of ingredients, create a recipe data object that includes a title, a brief description, ingredients, step-by-step instructions, and any additional information such as prep time, cook time, total time, yield, and nutrition information if applicable.
 
 Ingredients: ${ingredientsList}
 
-Provide a title, a brief description, a list of ingredients with quantities, step-by-step instructions, and any additional information such as prep time, cook time, total time, yield, and nutrition information if applicable.
+Provide the data in JSON format matching the provided schema.
 `;
 
         // Generate content using the model
@@ -99,11 +99,11 @@ Provide a title, a brief description, a list of ingredients with quantities, ste
         const responseText = result.response.text();
 
         // Convert JSON to object
-        const recipeObj = JSON.parse(responseText);
+        const recipeDataObj = JSON.parse(responseText);
 
-        return { error: null, recipe: recipeObj };
+        return { error: null, data: recipeDataObj };
     } catch (error) {
-        console.error("Error generating recipe:", error);
-        return { error: error.message, recipe: null };
+        console.error("Error generating recipe data:", error);
+        return { error: error.message, data: null };
     }
 }

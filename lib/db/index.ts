@@ -109,18 +109,19 @@ export async function deleteUser(userId: number) {
 
 ////// Recipes
 
-export async function insertNewRecipe(name: string, ingredients: string, userId: number) {
-    const recipe = { name: name, ingredients: ingredients, userId: userId };
+export async function insertNewRecipe(recipeData: string, userId: number) {
+    const recipe = { data: recipeData, userId };
 
     try {
         // Begin a transaction
         await db.transaction(async (trx) => {
-        await trx.insert(recipesTable).values(recipe);
+            await trx.insert(recipesTable).values(recipe);
         });
 
-        console.log('recipe has been added successfully.');
+        console.log('Recipe has been added successfully.');
     } catch (error) {
         console.error('Error adding recipe:', error);
+        throw error;  // Re-throw error after logging
     }
 }
 
@@ -156,6 +157,17 @@ export async function updateRecipe(recipeId: number,newName: string, newIngredie
         });
     } catch (error) {
         console.error('Error updating user age:', error);
+        throw error;  // Re-throw error after logging
+    }
+}
+
+export async function getRecipesByUserId(userId: number) {
+    try {
+        const recipes = await db.select().from(recipesTable).where(eq(recipesTable.userId, userId));
+        console.log(`Retrieved ${recipes.length} recipes for user ID: ${userId}`);
+        return recipes;
+    } catch (error) {
+        console.error('Error retrieving recipes:', error);
         throw error;  // Re-throw error after logging
     }
 }

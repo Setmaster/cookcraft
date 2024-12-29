@@ -1,4 +1,4 @@
-﻿import { integer, pgTable, varchar } from "drizzle-orm/pg-core";
+﻿import {integer, pgTable, text, varchar} from "drizzle-orm/pg-core";
 
 // users table
 export const usersTable = pgTable("users", {
@@ -11,8 +11,7 @@ export const usersTable = pgTable("users", {
 // recipes table
 export const recipesTable = pgTable("recipes", {
     id: integer().primaryKey().generatedAlwaysAsIdentity(),
-    name: varchar({ length: 255 }).notNull(),
-    ingredients: varchar({ length: 255 }).notNull(),
+    data: text().notNull(),
     userId: integer("user_id").notNull().references(() => usersTable.id),
 });
 
