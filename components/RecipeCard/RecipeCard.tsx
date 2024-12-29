@@ -1,12 +1,14 @@
-﻿import {ActionIcon, Card, Group, rem, useMantineTheme} from "@mantine/core";
+﻿import { ActionIcon, Card, Group, rem, useMantineTheme, Modal, Button, Text } from "@mantine/core";
+import { useDisclosure } from '@mantine/hooks';
 import classes from './RecipeCard.module.css';
 import Link from "next/link";
 import RecipeImage from "@/components/RecipeCard/RecipeImage";
-import {IconShare} from "@tabler/icons-react";
-import {getAPPUrl} from "@/lib/actions/userActions";
+import { IconShare } from "@tabler/icons-react";
+import { getAPPUrl } from "@/lib/actions/userActions";
 
 export default function RecipeCard() {
     const theme = useMantineTheme();
+    const [opened, { open, close }] = useDisclosure(false);
 
     const handleShare = async (event: { stopPropagation: () => void; preventDefault: () => void; }) => {
         event.stopPropagation(); // Prevent the Card link from being triggered
@@ -32,26 +34,36 @@ export default function RecipeCard() {
             }
         }
     };
-    
-    return (
-        <Card
-            withBorder
-            padding="lg"
-            radius="md"
-            className={classes.card}
-            component={Link}
-            href={`/`}
-            target="_self"
-        >
-            <Card.Section mb="sm">
-                <div className={classes.saleImageContainer}>
-                    <RecipeImage />
-                </div>
-            </Card.Section>
 
-            <Card.Section className={classes.footer}>
-                <div className={classes.bottomText}>Recipe Name</div>
-            </Card.Section>
-        </Card>
+    const handleCardClick = (event: React.MouseEvent) => {
+        event.preventDefault();
+        open();
+    };
+
+    return (
+        <>
+            <Card
+                withBorder
+                padding="lg"
+                radius="md"
+                className={classes.card}
+                onClick={handleCardClick}
+                component="div"
+            >
+                <Card.Section mb="sm">
+                    <div className={classes.saleImageContainer}>
+                        <RecipeImage />
+                    </div>
+                </Card.Section>
+
+                <Card.Section className={classes.footer}>
+                    <div className={classes.bottomText}>Recipe Name</div>
+                </Card.Section>
+            </Card>
+
+            <Modal opened={opened} onClose={close} title="Recipe Title">
+                <Text>Recipe information</Text>
+            </Modal>
+        </>
     );
 }
