@@ -37,11 +37,11 @@ export async function insertNewUser(name: string, email: string, password: strin
     
     await executeTransaction(
         async (trx) => {
-            const [existingUser] = await trx.select().from(usersTable).where(eq(usersTable.email, email));
+            const [existingUser] = await trx.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase()));
 
             if (!existingUser) {
                 const hashedPassword = await bcrypt.hash(password, 10);
-                const user = { name, email, password: hashedPassword };
+                const user = { name, email: email.toLowerCase(), password: hashedPassword };
                 await trx.insert(usersTable).values(user);
             } else {
                 throw new Error('User with such email already exists.');
@@ -74,7 +74,7 @@ export async function getAllUsers() {
 
 export async function isValidLogin(email: string, password: string): Promise<boolean>   {
     try {
-        const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+        const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase()));
         if (!existingUser) {
             return false;
         }
