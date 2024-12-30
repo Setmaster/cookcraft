@@ -24,7 +24,7 @@
       "CookTime": "30 mins",
       "TotalTime": "40 mins",
       "Yield": "2 servings",
-      "NutritionInformation": "Calories: 500"
+      "CaloriesPerServing": "500"
     },
     "userId": 1
   },
@@ -52,7 +52,7 @@
       "CookTime": "25 mins",
       "TotalTime": "40 mins",
       "Yield": "4 servings",
-      "NutritionInformation": "Calories: 600"
+      "CaloriesPerServing": "600"
     },
     "userId": 1
   },
@@ -79,7 +79,7 @@
       "CookTime": "10 mins",
       "TotalTime": "20 mins",
       "Yield": "2 servings",
-      "NutritionInformation": "Calories: 250"
+      "CaloriesPerServing": "250"
     },
     "userId": 2
   },
@@ -105,7 +105,7 @@
       "CookTime": "15 mins",
       "TotalTime": "30 mins",
       "Yield": "4 servings",
-      "NutritionInformation": "Calories: 700"
+      "CaloriesPerServing": "700"
     },
     "userId": 3
   }

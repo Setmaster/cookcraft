@@ -1,9 +1,10 @@
 ﻿'use server'
 
-import {getAllUsers, deleteAllUsers, insertNewRecipe} from "@/lib/db";
+import {getAllUsers, deleteAllUsers, insertNewRecipe, getRecipesByUserId} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
 import {seedRecipes} from "@/lib/db/seed/seedRecipes";
+import {Recipe} from "@/lib/types/generalTypes";
 
 function handleError(actionName: string, error: any) {
     console.error(`Error during ${actionName}:`, error);
@@ -43,6 +44,29 @@ export async function deleteAllUsersA() {
         return {message: 'All users deleted successfully'};
     } catch (error) {
         handleError('deleting users', error);
+    }
+}
+
+export async function fetchUserRecipes(userId: number): Promise<Recipe[]> {
+    try {
+        const recipesFromDb = await getRecipesByUserId(userId);
+
+        // Map over the recipes and parse the data field
+        const recipes: Recipe[] = recipesFromDb.map((recipeRecord) => {
+            const data = JSON.parse(recipeRecord.data);
+
+            return {
+                id: recipeRecord.id,
+                userId: recipeRecord.userId,
+                dateCreated: recipeRecord.dateCreated,
+                ...data, // Spread the parsed data properties
+            };
+        });
+
+        return recipes;
+    } catch (error) {
+        console.error('Error fetching recipes:', error);
+        throw new Error('Failed to fetch recipes');
     }
 }
 

@@ -1,76 +1,86 @@
-﻿import { Card, Modal, ScrollArea, TypographyStylesProvider } from "@mantine/core";
-import { useDisclosure } from '@mantine/hooks';
-import classes from './RecipeCard.module.css';
-import RecipeImage from "@/components/RecipeCard/RecipeImage";
-import {Recipe} from "@/lib/types/generalTypes";
+﻿'use client';
 
-type RecipeCardProps = {
+import React from 'react';
+import { useDisclosure } from '@mantine/hooks';
+import { Card, Modal, Button, Text, Title, Group } from '@mantine/core';
+import { Recipe } from '@/lib/types/generalTypes';
+
+interface RecipeCardProps {
     recipe: Recipe;
-};
+}
 
 export default function RecipeCard({ recipe }: RecipeCardProps) {
     const [opened, { open, close }] = useDisclosure(false);
 
-    const handleCardClick = (event: React.MouseEvent) => {
-        event.preventDefault(); // Prevent default navigation behavior
-        open(); // Open the modal
-    };
-
     return (
         <>
+            {/* Recipe Card */}
             <Card
-                withBorder
+                shadow="sm"
                 padding="lg"
                 radius="md"
-                className={classes.card}
-                onClick={handleCardClick}
-                component="div" // Change Link component to div to stop navigation
+                withBorder
+                onClick={open}
+                style={{ cursor: 'pointer' }}
             >
-                <Card.Section mb="sm">
-                    <div className={classes.saleImageContainer}>
-                        <RecipeImage />
-                    </div>
-                </Card.Section>
-
-                <Card.Section className={classes.footer}>
-                    <div className={classes.bottomText}>{recipe.Title}</div>
-                </Card.Section>
+                <Group position="apart" mb="xs">
+                    <Title order={4}>{recipe.Title}</Title>
+                </Group>
+                <Text size="sm" color="dimmed">
+                    {recipe.Description || 'No description available.'}
+                </Text>
             </Card>
 
-            <Modal
-                opened={opened}
-                onClose={close}
-                title="Recipe Information"
-                size="lg"
-            >
-                <ScrollArea style={{ height: '70vh' }}>
-                    <TypographyStylesProvider>
-                        <div>
-                            <h1>{recipe.Title}</h1>
-                            <p>{recipe.Description}</p>
-                            <h2>Ingredients</h2>
-                            <ul>
-                                {recipe.Ingredients.map((ingredient, index) => (
-                                    <li key={index}>{ingredient}</li>
-                                ))}
-                            </ul>
-                            <h2>Instructions</h2>
-                            <ol>
-                                {recipe.Instructions.map((instruction, index) => (
-                                    <li key={index}>{instruction}</li>
-                                ))}
-                            </ol>
-                            {recipe.AdditionalInformation && (
-                                <div>
-                                    <h2>Additional Information</h2>
-                                    {Object.entries(recipe.AdditionalInformation).map(([key, value]) => (
-                                        value && <p key={key}><strong>{key}:</strong> {value}</p>
-                                    ))}
-                                </div>
+            {/* Recipe Modal */}
+            <Modal opened={opened} onClose={close} title={recipe.Title} size="lg">
+                <div style={{ maxHeight: '70vh', overflowY: 'auto' }}>
+                    {/* Ingredients Section */}
+                    <Title order={5}>Ingredients</Title>
+                    {recipe.Ingredients && recipe.Ingredients.length > 0 ? (
+                        <ul>
+                            {recipe.Ingredients.map((ingredient, index) => (
+                                <li key={index}>{ingredient}</li>
+                            ))}
+                        </ul>
+                    ) : (
+                        <Text>No ingredients listed.</Text>
+                    )}
+
+                    {/* Instructions Section */}
+                    <Title order={5} mt="md">
+                        Instructions
+                    </Title>
+                    {recipe.Instructions && recipe.Instructions.length > 0 ? (
+                        <ol>
+                            {recipe.Instructions.map((step, index) => (
+                                <li key={index}>{step}</li>
+                            ))}
+                        </ol>
+                    ) : (
+                        <Text>No instructions provided.</Text>
+                    )}
+
+                    {/* Additional Information */}
+                    {recipe.AdditionalInformation && (
+                        <>
+                            <Title order={5} mt="md">
+                                Additional Information
+                            </Title>
+                            {Object.entries(recipe.AdditionalInformation).map(
+                                ([key, value]) => (
+                                    <Text key={key}>
+                                        <strong>{key}:</strong> {value}
+                                    </Text>
+                                )
                             )}
-                        </div>
-                    </TypographyStylesProvider>
-                </ScrollArea>
+                        </>
+                    )}
+                </div>
+
+                {/* Close Button */}
+                <Button onClick={close} mt="md">
+                    Close
+                </Button>
             </Modal>
         </>
     );

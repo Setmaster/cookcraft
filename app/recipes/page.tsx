@@ -1,15 +1,14 @@
-﻿"use client";
-
-import { Prompt } from "@/components/PromptBar/Prompt";
-
-import React from "react";
+﻿import { Prompt } from "@/components/PromptBar/Prompt";
 import Listings from "@/components/Recipes/Listings";
+import { fetchUserRecipes } from "@/lib/actions/dbActions";
 
-export default function RecipesPage() {
+export default async function RecipesPage() {
+    const recipes = await fetchUserRecipes(1); // Fetch recipes for user ID 1
+
     return (
-      <>
-        <Prompt />
-        <Listings/>
-      </>
+        <>
+            <Prompt />
+            <Listings recipes={recipes} />
+        </>
     );
 }

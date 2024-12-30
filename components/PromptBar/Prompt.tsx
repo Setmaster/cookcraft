@@ -1,3 +1,4 @@
+'use client';
 import { useState } from "react";
 import { TextInput, Button } from "@mantine/core";
 import classes from './Prompt.module.css';
