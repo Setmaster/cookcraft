@@ -72,11 +72,11 @@ export async function getAllUsers() {
     }
 }
 
-export async function validLogin(email: string, password: string): Promise<boolean>   {
+export async function isValidLogin(email: string, password: string): Promise<boolean>   {
     try {
         const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.email, email));
         if (!existingUser) {
-        return false;
+            return false;
         }
     
         return await bcrypt.compare(password, existingUser.password);
