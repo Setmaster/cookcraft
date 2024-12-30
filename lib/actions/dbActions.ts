@@ -3,6 +3,7 @@
 import {getAllUsers, deleteAllUsers, insertNewRecipe} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
+import {seedRecipes} from "@/lib/db/seed/seedRecipes";
 
 function handleError(actionName: string, error: any) {
     console.error(`Error during ${actionName}:`, error);
@@ -15,6 +16,15 @@ export async function seedUsersA() {
         return {message: 'Users seeded successfully'};
     } catch (error) {
         handleError('seeding users', error);
+    }
+}
+
+export async function seedRecipesA() {
+    try {
+        await seedRecipes();
+        return { message: 'Recipes seeded successfully' };
+    } catch (error) {
+        handleError('seeding recipes', error);
     }
 }
 

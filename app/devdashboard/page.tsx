@@ -1,7 +1,7 @@
 ﻿'use client';
 import {Button} from '@mantine/core';
 import {useRouter} from 'next/navigation';
-import {deleteAllUsersA, getAllUsersA, seedUsersA} from "@/lib/actions/dbActions";
+import {deleteAllUsersA, getAllUsersA, seedRecipesA, seedUsersA} from "@/lib/actions/dbActions";
 // import {generateRecipeA} from "@/lib/actions/aiActions";
 
 export default function DevDashboard() {
@@ -19,19 +19,21 @@ export default function DevDashboard() {
     }
 
     const handleGetAllUsers = async () => {
-        // Call the GetAllUsersA action
         const response = await getAllUsersA();
         console.log(response);
     }
 
     const handleDeleteAllUsers = async () => {
-        // Call the deleteAllUsersA action
         const response = await deleteAllUsersA();
         console.log(response);
     }
 
+    const handleSeedRecipes = async () => {
+        const response = await seedRecipesA();
+        console.log(response);
+    }
+
     // const handleGenerateRecipe = async () => {
-    //     // Call the generateRecipeA action
     //     const response = await generateRecipeA("Potatoes, honey, grapes");
     //     console.log(response);
     // }
@@ -53,6 +55,9 @@ export default function DevDashboard() {
             {/*</Button>*/}
             <Button onClick={handleDeleteAllUsers}>
                 Delete Users Test
+            </Button>
+            <Button onClick={handleSeedRecipes}>
+                Seed Recipes Test
             </Button>
         </main>
     );

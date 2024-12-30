@@ -1,0 +1,112 @@
+[
+  {
+    "Title": "Spaghetti Bolognese",
+    "Description": "A classic Italian pasta dish with rich, meaty sauce.",
+    "Ingredients": [
+      "200g spaghetti",
+      "100g minced beef",
+      "1 onion, chopped",
+      "2 garlic cloves, minced",
+      "400g canned tomatoes",
+      "2 tbsp olive oil",
+      "Salt and pepper to taste"
+    ],
+    "Instructions": [
+      "Boil the spaghetti according to package instructions.",
+      "Heat olive oil in a pan and sauté onions and garlic.",
+      "Add minced beef and cook until browned.",
+      "Stir in canned tomatoes and simmer for 20 minutes.",
+      "Season with salt and pepper.",
+      "Serve sauce over spaghetti."
+    ],
+    "AdditionalInformation": {
+      "PrepTime": "10 mins",
+      "CookTime": "30 mins",
+      "TotalTime": "40 mins",
+      "Yield": "2 servings",
+      "NutritionInformation": "Calories: 500"
+    },
+    "userId": 1
+  },
+  {
+    "Title": "Chicken Curry",
+    "Description": "A flavorful and spicy chicken curry dish.",
+    "Ingredients": [
+      "500g chicken breast, diced",
+      "2 onions, chopped",
+      "3 garlic cloves, minced",
+      "1 tbsp curry powder",
+      "400ml coconut milk",
+      "2 tbsp vegetable oil",
+      "Salt to taste"
+    ],
+    "Instructions": [
+      "Heat oil in a pot and sauté onions and garlic.",
+      "Add chicken and cook until browned.",
+      "Stir in curry powder and cook for 1 minute.",
+      "Pour in coconut milk and simmer for 20 minutes.",
+      "Season with salt."
+    ],
+    "AdditionalInformation": {
+      "PrepTime": "15 mins",
+      "CookTime": "25 mins",
+      "TotalTime": "40 mins",
+      "Yield": "4 servings",
+      "NutritionInformation": "Calories: 600"
+    },
+    "userId": 1
+  },
+  {
+    "Title": "Vegetable Stir Fry",
+    "Description": "A quick and easy vegetable stir fry with a savory sauce.",
+    "Ingredients": [
+      "1 red bell pepper, sliced",
+      "1 yellow bell pepper, sliced",
+      "100g broccoli florets",
+      "2 carrots, sliced",
+      "2 tbsp soy sauce",
+      "1 tbsp sesame oil",
+      "1 garlic clove, minced"
+    ],
+    "Instructions": [
+      "Heat sesame oil in a wok.",
+      "Add garlic and stir fry until fragrant.",
+      "Add vegetables and stir fry for 5-7 minutes.",
+      "Pour in soy sauce and stir well."
+    ],
+    "AdditionalInformation": {
+      "PrepTime": "10 mins",
+      "CookTime": "10 mins",
+      "TotalTime": "20 mins",
+      "Yield": "2 servings",
+      "NutritionInformation": "Calories: 250"
+    },
+    "userId": 2
+  },
+  {
+    "Title": "Beef Tacos",
+    "Description": "Delicious beef tacos with fresh toppings.",
+    "Ingredients": [
+      "500g minced beef",
+      "8 taco shells",
+      "1 onion, chopped",
+      "2 tomatoes, diced",
+      "1 cup shredded lettuce",
+      "1 cup grated cheese",
+      "2 tbsp taco seasoning"
+    ],
+    "Instructions": [
+      "Cook beef and onion in a pan until browned.",
+      "Add taco seasoning and stir well.",
+      "Assemble tacos with beef mixture, lettuce, tomatoes, and cheese."
+    ],
+    "AdditionalInformation": {
+      "PrepTime": "15 mins",
+      "CookTime": "15 mins",
+      "TotalTime": "30 mins",
+      "Yield": "4 servings",
+      "NutritionInformation": "Calories: 700"
+    },
+    "userId": 3
+  }
+]
