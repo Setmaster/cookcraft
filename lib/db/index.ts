@@ -32,25 +32,6 @@ async function executeTransaction(
 }
 
 // Users
-export async function seedUsers() {
-    const users = [
-        { name: 'Alice Smith', email: 'alice@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
-        { name: 'Bob Johnson', email: 'bob@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
-        { name: 'Carol Williams', email: 'carol@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
-    ];
-
-    await executeTransaction(
-        async (trx) => {
-            for (const user of users) {
-                await trx.insert(usersTable).values(user);
-            }
-        },
-        'Users have been seeded successfully.',
-        'Error seeding users',
-        { users }
-    );
-}
-
 export async function insertNewUser(name: string, email: string, password: string) {
     const user = { name, email, password };
 

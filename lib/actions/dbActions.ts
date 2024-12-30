@@ -1,7 +1,8 @@
 ﻿'use server'
 
-import {getAllUsers, seedUsers, deleteAllUsers, insertNewRecipe} from "@/lib/db";
+import {getAllUsers, deleteAllUsers, insertNewRecipe} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
+import {seedUsers} from "@/lib/db/seed/seedUsers";
 
 function handleError(actionName: string, error: any) {
     console.error(`Error during ${actionName}:`, error);
