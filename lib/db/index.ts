@@ -1,256 +1,191 @@
 ﻿import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { usersTable } from './schema';
-import { recipesTable } from './schema';
-import {eq} from "drizzle-orm";
-import { validateString } from '@/utils/indexHelpers'
-import logger from '@/utils/logger';
+import { usersTable, recipesTable } from './schema';
+import { eq } from 'drizzle-orm';
+import { validateString } from '@/lib/utils/indexHelpers';
+import logger from '@/lib/utils/logger';
+import { Recipe } from '@/lib/types/generalTypes';
 
 const db = drizzle(process.env.DATABASE_URL!);
 
-////////// Users
-
-export async function seedUsers() {
-    // Sample user data
-    const users = [
-        { name: 'Alice Smith', email: 'alice@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.'  },
-        { name: 'Bob Johnson', email: 'bob@example.com' , password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
-        { name: 'Carol Williams', email: 'carol@example.com' , password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
-    ];
-
+// Helper function for transaction and logging
+async function executeTransaction(
+    action: (trx: any) => Promise<void>,
+    successMessage: string,
+    errorMessage: string,
+    additionalInfo: object = {}
+) {
     try {
-        // Begin a transaction
-        await db.transaction(async (trx) => {
-            // Insert each user into the usersTable
-            for (const user of users) {
-                // Insert a single user
-                await trx.insert(usersTable).values(user);
-            }
-        });
-        logger.info('Users have been seeded successfully.', {
-            route: '/lib/db',
+        await db.transaction(action);
+        logger.info(successMessage, {
+            ...additionalInfo,
             status: 'success',
             timestamp: new Date().toISOString()
-          });
+        });
     } catch (error) {
-        logger.error('Error seeding users', {
+        logger.error(errorMessage, {
             message: error,
-            route: '/lib/db',
-            additionalInfo: users
-          });
+            ...additionalInfo
+        });
+        throw error;
     }
 }
 
-export async function insertNewUser(name: string, email: string, password: string) {
-    const user = { name: name, email: email, password: password };
+// Users
+export async function seedUsers() {
+    const users = [
+        { name: 'Alice Smith', email: 'alice@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
+        { name: 'Bob Johnson', email: 'bob@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
+        { name: 'Carol Williams', email: 'carol@example.com', password: '$2a$10$FB/BOAVhpuLvpOREQVmvmezD4ED/.JBIDRh70tGevYzYzQgFId2u.' },
+    ];
 
-    try {
-        // Begin a transaction
-        await db.transaction(async (trx) => {
-        await trx.insert(usersTable).values(user);
-        });
-        logger.info('User has been added successfully.', {
-            name,
-            email,
-            password,
-            route: '/lib/db',
-            status: 'success',
-            timestamp: new Date().toISOString()
-          });
-    } catch (error) {
-        logger.error('Error adding a user', {
-            message: error,
-            route: '/lib/db',
-            additionalInfo: user
-          });
-    }
+    await executeTransaction(
+        async (trx) => {
+            for (const user of users) {
+                await trx.insert(usersTable).values(user);
+            }
+        },
+        'Users have been seeded successfully.',
+        'Error seeding users',
+        { users }
+    );
+}
+
+export async function insertNewUser(name: string, email: string, password: string) {
+    const user = { name, email, password };
+
+    await executeTransaction(
+        async (trx) => {
+            await trx.insert(usersTable).values(user);
+        },
+        'User has been added successfully.',
+        'Error adding a user',
+        { name, email }
+    );
 }
 
 export async function getAllUsers() {
     try {
-        // Select all users from the usersTable
         const users = await db.select().from(usersTable);
         logger.info('Retrieved users.', {
-            users,
             route: '/lib/db',
             status: 'success',
             timestamp: new Date().toISOString()
-          });
+        });
         return users;
     } catch (error) {
         logger.error('Error retrieving users', {
             message: error,
             route: '/lib/db',
-          });
-        throw error;  // Re-throw error after logging
+        });
+        throw error;
     }
 }
 
-export async function updateUser(userId: number,newName: string, newPassword: string) {
-    try {
-        // Start a transaction
-        await db.transaction(async (trx) => {
-            // Find the first user
+//TODO implement auth which will handle this
+export async function updateUser(userId: number, newName: string, newPassword: string) {
+    await executeTransaction(
+        async (trx) => {
             const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
 
-            const validName = validateString(newName,user.name);
-            const validPassword =   validateString(newPassword,user.password); 
-
             if (user) {
+                const validName = validateString(newName, user.name);
+                const validPassword = validateString(newPassword, user.password);
+
                 await trx.update(usersTable)
-                    .set({ name: validName , password: validPassword})
-                    .where(eq(usersTable.id, userId));  // Use the eq function
-                logger.info('User updated.', {
-                    userId,
-                    newName,
-                    newPassword,
-                    route: '/lib/db',
-                    status: 'success',
-                    timestamp: new Date().toISOString()
-                  });
+                    .set({ name: validName, password: validPassword })
+                    .where(eq(usersTable.id, userId));
             } else {
-                console.log('No user found to update.');
+                throw new Error('No user found to update.');
             }
-        });
-    } catch (error) {
-        logger.error('Error updating a user', {
-            message: error,
-            route: '/lib/db',
-            additionalInfo: { userId: userId, newName: newName, newPassword:  newPassword }
-          });
-        throw error;  // Re-throw error after logging
-    }
+        },
+        'User updated.',
+        'Error updating a user',
+        { userId, newName }
+    );
 }
 
 export async function deleteAllUsers() {
-    try {
-        // Delete all users from the usersTable
-        await db.delete(usersTable);
-
-        logger.info('All users have been deleted successfully.', {
-            route: '/lib/db',
-            status: 'success',
-            timestamp: new Date().toISOString()
-          });
-    } catch (error) {
-        logger.error('Error deleting users', {
-            message: error,
-            route: '/lib/db',
-          });
-        throw error;  // Re-throw error after logging
-    }
+    await executeTransaction(
+        async (trx) => {
+            await trx.delete(usersTable);
+        },
+        'All users have been deleted successfully.',
+        'Error deleting users'
+    );
 }
 
 export async function deleteUser(userId: number) {
-    try {
-        await db.delete(usersTable).where(eq(usersTable.id, userId));
-
-        logger.info('User has been deleted successfully.', {
-            userId,
-            route: '/lib/db',
-            status: 'success',
-            timestamp: new Date().toISOString()
-          });
-    } catch (error) {
-        logger.error('Error deleting a user', {
-            message: error,
-            route: '/lib/db',
-            additionalInfo: { userId: userId }
-          });
-        throw error;  // Re-throw error after logging
-    }
+    await executeTransaction(
+        async (trx) => {
+            await trx.delete(usersTable).where(eq(usersTable.id, userId));
+        },
+        'User has been deleted successfully.',
+        'Error deleting a user',
+        { userId }
+    );
 }
 
-////// Recipes
+// Recipes
+export async function insertNewRecipe(recipeData: Recipe['Data'], userId: number) {
+    const recipe = { data: JSON.stringify(recipeData), userId };
 
-export async function insertNewRecipe(recipeData: string, userId: number) {
-    const recipe = { data: recipeData, userId };
-
-    try {
-        // Begin a transaction
-        await db.transaction(async (trx) => {
+    await executeTransaction(
+        async (trx) => {
             await trx.insert(recipesTable).values(recipe);
-        });
-
-        logger.info('Recipe has been added successfully.', {
-            recipe,
-            route: '/lib/db',
-            status: 'success',
-            timestamp: new Date().toISOString()
-          });
-    } catch (error) {
-        logger.error('Error adding a recipe', {
-            message: error,
-            route: '/lib/db',
-            additionalInfo: recipe
-          });
-    }
+        },
+        'Recipe has been added successfully.',
+        'Error adding a recipe',
+        { recipe }
+    );
 }
 
 export async function deleteRecipe(recipeId: number) {
-    try {
-        await db.delete(recipesTable).where(eq(recipesTable.id, recipeId));
-
-        logger.info('Recipe has been deleted successfully.', {
-            recipeId,
-            route: '/lib/db',
-            status: 'success',
-            timestamp: new Date().toISOString()
-          });
-    } catch (error) {
-        logger.error('Error deleting a recipe', {
-            message: error,
-            route: '/lib/db',
-            additionalInfo: { recipeId: recipeId }
-          });
-        throw error;  // Re-throw error after logging
-    }
+    await executeTransaction(
+        async (trx) => {
+            await trx.delete(recipesTable).where(eq(recipesTable.id, recipeId));
+        },
+        'Recipe has been deleted successfully.',
+        'Error deleting a recipe',
+        { recipeId }
+    );
 }
 
-export async function updateRecipe(recipeId: number,newName: string, newIngredients: string ) {
-    try {
-        // Start a transaction
-        await db.transaction(async (trx) => {
-            // Find the first user
+export async function updateRecipe(recipeId: number, newTitle: string, newIngredients: string[]) {
+    await executeTransaction(
+        async (trx) => {
             const [recipe] = await trx.select().from(recipesTable).where(eq(recipesTable.id, recipeId));
-            
-            const validName = validateString(newName,recipe.name);
-            const validIngredients = validateString(newIngredients,recipe.ingredients);
 
             if (recipe) {
+                const updatedData = { ...JSON.parse(recipe.data), Title: newTitle, Ingredients: newIngredients };
+
                 await trx.update(recipesTable)
-                    .set({ name: validName , ingredients: validIngredients})
-                    .where(eq(recipesTable.id, recipeId));  // Use the eq function
-                logger.info('Recipe updated.', {
-                    recipeId,
-                    validName,
-                    validIngredients,
-                    route: '/lib/db',
-                    status: 'success',
-                    timestamp: new Date().toISOString()
-                  });
+                    .set({ data: JSON.stringify(updatedData) })
+                    .where(eq(recipesTable.id, recipeId));
             } else {
                 throw new Error('No recipe found to update.');
             }
-        });
-    } catch (error) {
-        logger.error('Error updating a recipe', {
-            message: error,
-            recipeId,
-            route: '/lib/db',
-            additionalInfo: { recipeId: recipeId, newName: newName, newIngredients: newIngredients }
-          });
-        throw error;  // Re-throw error after logging
-    }
+        },
+        'Recipe updated.',
+        'Error updating a recipe',
+        { recipeId, newTitle }
+    );
 }
 
 export async function getRecipesByUserId(userId: number) {
     try {
         const recipes = await db.select().from(recipesTable).where(eq(recipesTable.userId, userId));
-        console.log(`Retrieved ${recipes.length} recipes for user ID: ${userId}`);
+        logger.info(`Retrieved ${recipes.length} recipes for user ID: ${userId}`, {
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+        });
         return recipes;
     } catch (error) {
-        console.error('Error retrieving recipes:', error);
-        throw error;  // Re-throw error after logging
+        logger.error('Error retrieving recipes', {
+            message: error,
+            route: '/lib/db',
+        });
+        throw error;
     }
 }
