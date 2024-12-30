@@ -3,6 +3,8 @@ import { drizzle } from 'drizzle-orm/node-postgres';
 import { usersTable } from './schema';
 import { recipesTable } from './schema';
 import {eq} from "drizzle-orm";
+import { validateString } from '@/utils/indexHelpers'
+import logger from '@/utils/logger';
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -25,10 +27,17 @@ export async function seedUsers() {
                 await trx.insert(usersTable).values(user);
             }
         });
-
-        console.log('Users have been seeded successfully.');
+        logger.info('Users have been seeded successfully.', {
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
     } catch (error) {
-        console.error('Error seeding users:', error);
+        logger.error('Error seeding users', {
+            message: error,
+            route: '/lib/db',
+            additionalInfo: users
+          });
     }
 }
 
@@ -40,10 +49,20 @@ export async function insertNewUser(name: string, email: string, password: strin
         await db.transaction(async (trx) => {
         await trx.insert(usersTable).values(user);
         });
-
-        console.log('User has been added successfully.');
+        logger.info('User has been added successfully.', {
+            name,
+            email,
+            password,
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
     } catch (error) {
-        console.error('Error adding users:', error);
+        logger.error('Error adding a user', {
+            message: error,
+            route: '/lib/db',
+            additionalInfo: user
+          });
     }
 }
 
@@ -51,10 +70,18 @@ export async function getAllUsers() {
     try {
         // Select all users from the usersTable
         const users = await db.select().from(usersTable);
-        console.log('Retrieved users:', users);
+        logger.info('Retrieved users.', {
+            users,
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
         return users;
     } catch (error) {
-        console.error('Error retrieving users:', error);
+        logger.error('Error retrieving users', {
+            message: error,
+            route: '/lib/db',
+          });
         throw error;  // Re-throw error after logging
     }
 }
@@ -66,20 +93,31 @@ export async function updateUser(userId: number,newName: string, newPassword: st
             // Find the first user
             const [user] = await trx.select().from(usersTable).where(eq(usersTable.id, userId));
 
-            const validName =  newName === null || newName === undefined || newName === "" ? user.name : newName;
-            const validPassword =  newPassword === null || newPassword === undefined || newPassword === "" ? user.password : newPassword;
+            const validName = validateString(newName,user.name);
+            const validPassword =   validateString(newPassword,user.password); 
 
             if (user) {
                 await trx.update(usersTable)
                     .set({ name: validName , password: validPassword})
                     .where(eq(usersTable.id, userId));  // Use the eq function
-                console.log(`User updated.`);
+                logger.info('User updated.', {
+                    userId,
+                    newName,
+                    newPassword,
+                    route: '/lib/db',
+                    status: 'success',
+                    timestamp: new Date().toISOString()
+                  });
             } else {
                 console.log('No user found to update.');
             }
         });
     } catch (error) {
-        console.error('Error updating user age:', error);
+        logger.error('Error updating a user', {
+            message: error,
+            route: '/lib/db',
+            additionalInfo: { userId: userId, newName: newName, newPassword:  newPassword }
+          });
         throw error;  // Re-throw error after logging
     }
 }
@@ -89,9 +127,16 @@ export async function deleteAllUsers() {
         // Delete all users from the usersTable
         await db.delete(usersTable);
 
-        console.log('All users have been deleted successfully.');
+        logger.info('All users have been deleted successfully.', {
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
     } catch (error) {
-        console.error('Error deleting users:', error);
+        logger.error('Error deleting users', {
+            message: error,
+            route: '/lib/db',
+          });
         throw error;  // Re-throw error after logging
     }
 }
@@ -100,9 +145,18 @@ export async function deleteUser(userId: number) {
     try {
         await db.delete(usersTable).where(eq(usersTable.id, userId));
 
-        console.log('User has been deleted successfully.');
+        logger.info('User has been deleted successfully.', {
+            userId,
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
     } catch (error) {
-        console.error('Error deleting user:', error);
+        logger.error('Error deleting a user', {
+            message: error,
+            route: '/lib/db',
+            additionalInfo: { userId: userId }
+          });
         throw error;  // Re-throw error after logging
     }
 }
@@ -118,10 +172,18 @@ export async function insertNewRecipe(recipeData: string, userId: number) {
             await trx.insert(recipesTable).values(recipe);
         });
 
-        console.log('Recipe has been added successfully.');
+        logger.info('Recipe has been added successfully.', {
+            recipe,
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
     } catch (error) {
-        console.error('Error adding recipe:', error);
-        throw error;  // Re-throw error after logging
+        logger.error('Error adding a recipe', {
+            message: error,
+            route: '/lib/db',
+            additionalInfo: recipe
+          });
     }
 }
 
@@ -129,9 +191,18 @@ export async function deleteRecipe(recipeId: number) {
     try {
         await db.delete(recipesTable).where(eq(recipesTable.id, recipeId));
 
-        console.log('Recipe has been deleted successfully.');
+        logger.info('Recipe has been deleted successfully.', {
+            recipeId,
+            route: '/lib/db',
+            status: 'success',
+            timestamp: new Date().toISOString()
+          });
     } catch (error) {
-        console.error('Error deleting recipe:', error);
+        logger.error('Error deleting a recipe', {
+            message: error,
+            route: '/lib/db',
+            additionalInfo: { recipeId: recipeId }
+          });
         throw error;  // Re-throw error after logging
     }
 }
@@ -142,21 +213,33 @@ export async function updateRecipe(recipeId: number,newName: string, newIngredie
         await db.transaction(async (trx) => {
             // Find the first user
             const [recipe] = await trx.select().from(recipesTable).where(eq(recipesTable.id, recipeId));
-
-            const validName =  newName === null || newName === undefined || newName === "" ? recipe.name : newName;
-            const validIngredients =  newIngredients === null || newIngredients === undefined || newIngredients === "" ? recipe.ingredients : newIngredients;
+            
+            const validName = validateString(newName,recipe.name);
+            const validIngredients = validateString(newIngredients,recipe.ingredients);
 
             if (recipe) {
                 await trx.update(recipesTable)
                     .set({ name: validName , ingredients: validIngredients})
                     .where(eq(recipesTable.id, recipeId));  // Use the eq function
-                console.log(`Recipe updated.`);
+                logger.info('Recipe updated.', {
+                    recipeId,
+                    validName,
+                    validIngredients,
+                    route: '/lib/db',
+                    status: 'success',
+                    timestamp: new Date().toISOString()
+                  });
             } else {
-                console.log('No recipe found to update.');
+                throw new Error('No recipe found to update.');
             }
         });
     } catch (error) {
-        console.error('Error updating user age:', error);
+        logger.error('Error updating a recipe', {
+            message: error,
+            recipeId,
+            route: '/lib/db',
+            additionalInfo: { recipeId: recipeId, newName: newName, newIngredients: newIngredients }
+          });
         throw error;  // Re-throw error after logging
     }
 }
