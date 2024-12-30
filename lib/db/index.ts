@@ -72,6 +72,25 @@ export async function getAllUsers() {
     }
 }
 
+export async function validLogin(email: string, password: string): Promise<boolean>   {
+    try {
+        const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.email, email));
+    if (!existingUser) {
+        return false;
+    }
+    else {
+        const isMatch = await bcrypt.compare(password, existingUser.password);
+        return isMatch; 
+    }
+    } catch (error) {
+        logger.error('Error validating login credentials', {
+            message: error,
+            route: '/lib/db',
+        });
+        throw error;
+    }
+}
+
 export async function updateUser(userId: number, newName: string, newPassword: string) {
     await executeTransaction(
         async (trx) => {
