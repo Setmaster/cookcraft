@@ -75,13 +75,12 @@ export async function getAllUsers() {
 export async function validLogin(email: string, password: string): Promise<boolean>   {
     try {
         const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.email, email));
-    if (!existingUser) {
+        if (!existingUser) {
         return false;
-    }
-    else {
-        const isMatch = await bcrypt.compare(password, existingUser.password);
-        return isMatch; 
-    }
+        }
+    
+        return await bcrypt.compare(password, existingUser.password);
+    
     } catch (error) {
         logger.error('Error validating login credentials', {
             message: error,
