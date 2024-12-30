@@ -5,6 +5,7 @@ import { eq } from 'drizzle-orm';
 import { validateString } from '@/lib/utils/indexHelpers';
 import logger from '@/lib/utils/logger';
 import { Recipe } from '@/lib/types/generalTypes';
+import bcrypt from "bcrypt";
 
 const db = drizzle(process.env.DATABASE_URL!);
 
@@ -33,11 +34,19 @@ async function executeTransaction(
 
 // Users
 export async function insertNewUser(name: string, email: string, password: string) {
-    const user = { name, email, password };
-
+    
     await executeTransaction(
         async (trx) => {
-            await trx.insert(usersTable).values(user);
+            const [existingUser] = await trx.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase()));
+
+            if (!existingUser) {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                const user = { name, email: email.toLowerCase(), password: hashedPassword };
+                await trx.insert(usersTable).values(user);
+            } else {
+                throw new Error('User with such email already exists.');
+            }
+            
         },
         'User has been added successfully.',
         'Error adding a user',
@@ -63,7 +72,24 @@ export async function getAllUsers() {
     }
 }
 
-//TODO implement auth which will handle this
+export async function isValidLogin(email: string, password: string): Promise<boolean>   {
+    try {
+        const [existingUser] = await db.select().from(usersTable).where(eq(usersTable.email, email.toLowerCase()));
+        if (!existingUser) {
+            return false;
+        }
+    
+        return await bcrypt.compare(password, existingUser.password);
+    
+    } catch (error) {
+        logger.error('Error validating login credentials', {
+            message: error,
+            route: '/lib/db',
+        });
+        throw error;
+    }
+}
+
 export async function updateUser(userId: number, newName: string, newPassword: string) {
     await executeTransaction(
         async (trx) => {
@@ -71,8 +97,10 @@ export async function updateUser(userId: number, newName: string, newPassword: s
 
             if (user) {
                 const validName = validateString(newName, user.name);
-                const validPassword = validateString(newPassword, user.password);
-
+                let validPassword = user.password;
+                if (newPassword) {
+                    validPassword = await bcrypt.hash(newPassword, 10);
+                } 
                 await trx.update(usersTable)
                     .set({ name: validName, password: validPassword })
                     .where(eq(usersTable.id, userId));
