@@ -77,22 +77,51 @@ export async function generateRecipeData(
     ingredientsList: string[]
 ): Promise<{ error: string | null; data: Recipe | null }> {
     try {
-        // Get the generative model with the specified schema
+        // Initialize the model with the "pro" version
         const model = genAI.getGenerativeModel({
-            model: "gemini-1.5-flash",
+            model: "gemini-1.5-pro",
             generationConfig: {
                 responseMimeType: "application/json",
                 responseSchema: recipeDataSchema,
             },
         });
 
-        // Define the prompt with instructions
+        // Revised prompt with explicit instructions and example
         const prompt = `
-Using the following list of ingredients, create a recipe data object that includes a title, a brief description, ingredients, step-by-step instructions, and any additional information such as prep time, cook time, total time, yield, and calories per serving if applicable.
+Using the following list of ingredients, create a recipe data object that includes:
 
-Ingredients: ${ingredientsList}
+- **Title**: A descriptive title of the recipe.
+- **Description**: A brief description of the recipe.
+- **Ingredients**: A list of ingredients, including quantities.
+- **Instructions**: Step-by-step cooking instructions without numbering or bullet points.
+- **AdditionalInformation**: Include as much of the following as applicable:
+  - **PrepTime**
+  - **CookTime**
+  - **TotalTime**
+  - **Yield**
+  - **CaloriesPerServing**
 
-Provide the data in JSON format matching the provided schema.
+Ingredients: ${ingredientsList.join(", ")}
+
+Provide the data in JSON format matching the provided schema. Ensure all fields are filled, and steps are written as plain sentences without any numbering.
+
+Example Format:
+
+{
+  "Title": "Spaghetti Bolognese",
+  "Description": "A classic Italian pasta dish with a rich, meaty sauce.",
+  "Ingredients": ["200g spaghetti", "100g minced beef", "..."],
+  "Instructions": ["Boil the spaghetti according to package instructions.", "Heat olive oil in a pan...", "..."],
+  "AdditionalInformation": {
+    "PrepTime": "10 mins",
+    "CookTime": "30 mins",
+    "TotalTime": "40 mins",
+    "Yield": "2 servings",
+    "CaloriesPerServing": "500"
+  }
+}
+
+Please create a similar recipe using the ingredients provided.
 `;
 
         // Generate content using the model
@@ -101,12 +130,33 @@ Provide the data in JSON format matching the provided schema.
         // Get the response text
         const responseText = result.response.text();
 
-        // Convert JSON to object
+        // Parse JSON and validate against schema
         const recipeDataObj: Recipe = JSON.parse(responseText);
+
+        // Post-processing to remove numbering from instructions
+        recipeDataObj.Instructions = recipeDataObj.Instructions.map(instruction =>
+            instruction.replace(/^\d+\.?\s*/, "")
+        );
+
+        console.log("HERE:",recipeDataObj.Description);
         
-        return {error: null, data: recipeDataObj};
+        if (!recipeDataObj.Description || recipeDataObj.Description.trim() === "") {
+            recipeDataObj.Description = "Delicious homemade recipe.";
+        }
+
+        if (!recipeDataObj.AdditionalInformation) {
+            recipeDataObj.AdditionalInformation = {
+                PrepTime: null,
+                CookTime: null,
+                TotalTime: null,
+                Yield: null,
+                CaloriesPerServing: null,
+            };
+        }
+
+        return { error: null, data: recipeDataObj };
     } catch (error) {
         console.error("Error generating recipe data:", error);
-        return {error: (error as Error).message, data: null};
+        return { error: (error as Error).message, data: null };
     }
 }

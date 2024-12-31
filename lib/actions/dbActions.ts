@@ -82,11 +82,12 @@ export async function generateAndSaveRecipe(ingredientsList: string[], userId: n
             throw new Error('No recipe generated');
         }
 
-        const { Title, Ingredients, Instructions, AdditionalInformation } = recipeData;
+        const { Title, Ingredients, Instructions, Description, AdditionalInformation } = recipeData;
 
         const recipeJSON = JSON.stringify({
             Title,
             Ingredients,
+            Description,
             Instructions,
             AdditionalInformation,
         });
