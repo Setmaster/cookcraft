@@ -50,7 +50,7 @@ export async function deleteAllUsersA() {
 export async function fetchUserRecipes(userId: number): Promise<Recipe[]> {
     try {
         const recipesFromDb = await getRecipesByUserId(userId);
-
+        
         // Map over the recipes and parse the data field
         const recipes: Recipe[] = recipesFromDb.map((recipeRecord) => {
             const data = JSON.parse(recipeRecord.data);
@@ -90,7 +90,7 @@ export async function generateAndSaveRecipe(ingredientsList: string[], userId: n
             Instructions,
             AdditionalInformation,
         });
-
+        
         await insertNewRecipe(recipeJSON, userId);
 
         return { message: 'Recipe generated and saved successfully' };

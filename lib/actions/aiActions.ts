@@ -103,7 +103,7 @@ Provide the data in JSON format matching the provided schema.
 
         // Convert JSON to object
         const recipeDataObj: Recipe = JSON.parse(responseText);
-
+        
         return {error: null, data: recipeDataObj};
     } catch (error) {
         console.error("Error generating recipe data:", error);

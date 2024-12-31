@@ -137,7 +137,7 @@ export async function deleteUser(userId: number) {
 
 // Recipes
 export async function insertNewRecipe(recipeData: Recipe['Data'], userId: number) {
-    const recipe = { data: JSON.stringify(recipeData), userId };
+    const recipe = { data: recipeData, userId };
 
     await executeTransaction(
         async (trx) => {
