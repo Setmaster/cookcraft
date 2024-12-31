@@ -1,14 +1,32 @@
-﻿import { Prompt } from "@/components/PromptBar/Prompt";
+﻿'use client';
+
+import { useState, useEffect } from 'react';
+import { Prompt } from "@/components/PromptBar/Prompt";
 import Listings from "@/components/Recipes/Listings";
 import { fetchUserRecipes } from "@/lib/actions/dbActions";
-import {Space} from "@mantine/core";
+import { Space } from "@mantine/core";
 
-export default async function RecipesPage() {
-    const recipes = await fetchUserRecipes(1); // Fetch recipes for user ID 1
+export default function RecipesPage() {
+    const [recipes, setRecipes] = useState([]);
+
+    useEffect(() => {
+        // Fetch recipes on component mount
+        const fetchRecipes = async () => {
+            const initialRecipes = await fetchUserRecipes(1);
+            setRecipes(initialRecipes);
+        };
+        fetchRecipes();
+    }, []);
+
+    // Function to refresh recipes
+    const refreshRecipes = async () => {
+        const updatedRecipes = await fetchUserRecipes(1);
+        setRecipes(updatedRecipes);
+    };
 
     return (
         <>
-            <Prompt />
+            <Prompt onRecipeGenerated={refreshRecipes} />
             <Space h="xl" />
             <Listings recipes={recipes} />
         </>
