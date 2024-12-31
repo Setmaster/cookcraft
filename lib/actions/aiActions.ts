@@ -137,8 +137,6 @@ Please create a similar recipe using the ingredients provided.
         recipeDataObj.Instructions = recipeDataObj.Instructions.map(instruction =>
             instruction.replace(/^\d+\.?\s*/, "")
         );
-
-        console.log("HERE:",recipeDataObj.Description);
         
         if (!recipeDataObj.Description || recipeDataObj.Description.trim() === "") {
             recipeDataObj.Description = "Delicious homemade recipe.";

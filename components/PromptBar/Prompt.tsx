@@ -9,38 +9,39 @@ import {
 } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import classes from './Prompt.module.css';
-
-// Import the server action
 import { generateAndSaveRecipe } from '@/lib/actions/dbActions';
 
-export const Prompt = () => {
+interface PromptProps {
+    onRecipeGenerated: () => void;
+}
+
+export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
     const [value, setValue] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const theme = useMantineTheme();
 
-    // Function to handle submission using server-side action
     const handleSubmit = async () => {
         if (!value.trim()) {
-            return; // Do nothing if the input is empty
+            return;
         }
-        setIsSubmitting(true); // Disable input and button
+        setIsSubmitting(true);
 
         try {
-            // Call the server-side function directly
             await generateAndSaveRecipe(value.split(',').map((s) => s.trim()), 1);
-
             console.log('Recipe generated and saved successfully.');
 
             // Clear the input field
             setValue('');
+
+            // Refresh the recipes listing
+            onRecipeGenerated();
         } catch (error) {
             console.error('Error during recipe generation:', error);
         } finally {
-            setIsSubmitting(false); // Re-enable input and button
+            setIsSubmitting(false);
         }
     };
 
-    // Handle Enter key press
     const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
         if (event.key === 'Enter') {
             event.preventDefault();
