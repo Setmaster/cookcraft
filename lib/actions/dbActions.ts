@@ -1,6 +1,6 @@
 ﻿'use server'
 
-import {getAllUsers, deleteAllUsers, insertNewRecipe, getRecipesByUserId, updateRecipe} from "@/lib/db";
+import {getAllUsers, deleteAllUsers, insertNewRecipe, getRecipesByUserId, updateRecipe, deleteRecipe} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
 import {seedRecipes} from "@/lib/db/seed/seedRecipes";
@@ -110,5 +110,14 @@ export async function updateRecipeA(
         return { message: 'Recipe updated successfully' };
     } catch (error) {
         handleError('updating recipe', error);
+    }
+}
+
+export async function deleteRecipeA(recipeId: number) {
+    try {
+        await deleteRecipe(recipeId);
+        return { message: 'Recipe deleted successfully' };
+    } catch (error) {
+        handleError('deleting recipe', error);
     }
 }

@@ -17,7 +17,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Recipe } from '@/lib/types/generalTypes';
-import { updateRecipeA } from '@/lib/actions/dbActions';
+import { updateRecipeA, deleteRecipeA } from '@/lib/actions/dbActions';
 import { IconTrash } from '@tabler/icons-react';
 
 interface RecipeCardProps {
@@ -27,6 +27,7 @@ interface RecipeCardProps {
 export default function RecipeCard({ recipe }: RecipeCardProps) {
     const [opened, { open, close }] = useDisclosure(false);
     const [isEditing, setIsEditing] = useState(false);
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false); // State for delete modal
 
     // Initialize the form with existing recipe data
     const form = useForm({
@@ -114,10 +115,10 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     const handleSubmit = async (formValues: typeof form.values) => {
         // Filter out empty ingredients
         const filteredIngredients = formValues.ingredients.filter(ing => ing.trim() !== '');
-      
+
         // Filter out empty instructions
         const filteredInstructions = formValues.instructions.filter(instr => instr.trim() !== '');
-      
+
         // Filter out empty additional information
         const filteredAdditionalInfo = formValues.additionalInfo
             .filter(info => info.key.trim() !== '' && info.value.trim() !== '')
@@ -142,6 +143,18 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
             window.location.reload();
         } catch (error) {
             console.error('Failed to update recipe:', error);
+            // TODO use toast to display error to user
+        }
+    };
+
+    // Handle recipe deletion
+    const handleDelete = async () => {
+        try {
+            await deleteRecipeA(recipe.id);
+            //TODO optimistic update
+            window.location.reload();
+        } catch (error) {
+            console.error('Failed to delete recipe:', error);
             // TODO use toast to display error to user
         }
     };
@@ -184,7 +197,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                     blur: 3,
                 }}
             >
-                <div style={{ maxHeight: '70vh', overflowY: 'auto',paddingRight: '16px' }}>
+                <div style={{ maxHeight: '70vh', overflowY: 'auto', paddingRight: '16px' }}>
                     {!isEditing ? (
                         <>
                             {/* View Mode */}
@@ -382,8 +395,27 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                             Close
                         </Button>
                         <Button onClick={handleEdit}>Edit</Button>
+                        <Button color="red" onClick={() => setDeleteModalOpen(true)}>Delete</Button> {/* Delete Button */}
                     </Group>
                 )}
+            </Modal>
+
+            {/* Delete Confirmation Modal */}
+            <Modal
+                opened={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                title="Confirm Delete"
+                size="sm"
+                overlayProps={{
+                    opacity: 0.55,
+                    blur: 3,
+                }}
+            >
+                <Text>Are you sure you want to delete this recipe?</Text>
+                <Group position="right" mt="md">
+                    <Button variant="default" onClick={() => setDeleteModalOpen(false)}>Cancel</Button>
+                    <Button color="red" onClick={handleDelete}>Confirm</Button>
+                </Group>
             </Modal>
         </>
     );
