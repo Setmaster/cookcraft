@@ -160,24 +160,32 @@ export async function deleteRecipe(recipeId: number) {
     );
 }
 
-export async function updateRecipe(recipeId: number, newTitle: string, newIngredients: string[]) {
+export async function updateRecipe(
+    recipeId: number,
+    updatedData: Partial<Recipe['Data']>
+) {
     await executeTransaction(
         async (trx) => {
-            const [recipe] = await trx.select().from(recipesTable).where(eq(recipesTable.id, recipeId));
+            const [recipe] = await trx
+                .select()
+                .from(recipesTable)
+                .where(eq(recipesTable.id, recipeId));
 
             if (recipe) {
-                const updatedData = { ...JSON.parse(recipe.data), Title: newTitle, Ingredients: newIngredients };
+                const existingData = JSON.parse(recipe.data);
+                const newData = { ...existingData, ...updatedData };
 
-                await trx.update(recipesTable)
-                    .set({ data: JSON.stringify(updatedData) })
+                await trx
+                    .update(recipesTable)
+                    .set({ data: JSON.stringify(newData) })
                     .where(eq(recipesTable.id, recipeId));
             } else {
                 throw new Error('No recipe found to update.');
             }
         },
-        'Recipe updated.',
-        'Error updating a recipe',
-        { recipeId, newTitle }
+        'Recipe updated successfully.',
+        'Error updating the recipe.',
+        { recipeId }
     );
 }
 

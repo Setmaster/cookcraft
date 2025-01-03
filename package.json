@@ -23,6 +23,7 @@
     "@mantine/nprogress": "^7.15.1",
     "@mantine/spotlight": "^7.15.1",
     "@mantine/tiptap": "^7.15.1",
+    "@tabler/icons": "^3.26.0",
     "@tabler/icons-react": "^3.26.0",
     "@tiptap/extension-link": "^2.10.4",
     "@tiptap/pm": "^2.10.4",

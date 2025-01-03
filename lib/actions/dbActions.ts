@@ -1,6 +1,6 @@
 ﻿'use server'
 
-import {getAllUsers, deleteAllUsers, insertNewRecipe, getRecipesByUserId} from "@/lib/db";
+import {getAllUsers, deleteAllUsers, insertNewRecipe, getRecipesByUserId, updateRecipe} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
 import {seedRecipes} from "@/lib/db/seed/seedRecipes";
@@ -98,5 +98,17 @@ export async function generateAndSaveRecipe(ingredientsList: string[], userId: n
     } catch (error) {
         console.error('Error generating and saving recipe:', error);
         throw error;  // Re-throw error after logging
+    }
+}
+
+export async function updateRecipeA(
+    recipeId: number,
+    updatedData: Partial<Recipe['Data']>
+) {
+    try {
+        await updateRecipe(recipeId, updatedData);
+        return { message: 'Recipe updated successfully' };
+    } catch (error) {
+        handleError('updating recipe', error);
     }
 }
