@@ -14,8 +14,8 @@ export default function DevDashboard() {
 
     const handleSeedUsers = async () => {
         // Call the seedUsersA action
-        const response = await seedUsersA();
-        console.log(response);
+        // const response = await seedUsersA();
+        console.log("n/a");
     }
 
     const handleGetAllUsers = async () => {
