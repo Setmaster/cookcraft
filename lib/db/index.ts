@@ -1,6 +1,6 @@
 ﻿import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { usersTable, recipesTable } from './schema';
+import { user, recipe } from './schema';
 import { eq } from 'drizzle-orm';
 // import { validateString } from '@/lib/utils/indexHelpers';
 // import logger from '@/lib/utils/logger';
@@ -34,7 +34,7 @@ async function executeTransaction(
 // Users
 export async function getAllUsers() {
     try {
-        const users = await db.select().from(usersTable);
+        const users = await db.select().from(user);
         // logger.info('Retrieved users.', {
         //     route: '/lib/db',
         //     status: 'success',
@@ -55,7 +55,7 @@ export async function getAllUsers() {
 export async function deleteAllUsers() {
     await executeTransaction(
         async (trx) => {
-            await trx.delete(usersTable);
+            await trx.delete(user);
         },
         'All users have been deleted successfully.',
         'Error deleting users'
@@ -65,7 +65,7 @@ export async function deleteAllUsers() {
 export async function deleteUser(userId: number) {
     await executeTransaction(
         async (trx) => {
-            await trx.delete(usersTable).where(eq(usersTable.id, userId));
+            await trx.delete(user).where(eq(user.id, userId));
         },
         'User has been deleted successfully.',
         'Error deleting a user',
@@ -79,7 +79,7 @@ export async function insertNewRecipe(recipeData: Recipe['Data'], userId: number
 
     await executeTransaction(
         async (trx) => {
-            await trx.insert(recipesTable).values(recipe);
+            await trx.insert(recipe).values(recipe);
         },
         'Recipe has been added successfully.',
         'Error adding a recipe',
@@ -90,7 +90,7 @@ export async function insertNewRecipe(recipeData: Recipe['Data'], userId: number
 export async function deleteRecipe(recipeId: number) {
     await executeTransaction(
         async (trx) => {
-            await trx.delete(recipesTable).where(eq(recipesTable.id, recipeId));
+            await trx.delete(recipe).where(eq(recipe.id, recipeId));
         },
         'Recipe has been deleted successfully.',
         'Error deleting a recipe',
@@ -106,17 +106,17 @@ export async function updateRecipe(
         async (trx) => {
             const [recipe] = await trx
                 .select()
-                .from(recipesTable)
-                .where(eq(recipesTable.id, recipeId));
+                .from(recipe)
+                .where(eq(recipe.id, recipeId));
 
             if (recipe) {
                 const existingData = JSON.parse(recipe.data);
                 const newData = { ...existingData, ...updatedData };
 
                 await trx
-                    .update(recipesTable)
+                    .update(recipe)
                     .set({ data: JSON.stringify(newData) })
-                    .where(eq(recipesTable.id, recipeId));
+                    .where(eq(recipe.id, recipeId));
             } else {
                 throw new Error('No recipe found to update.');
             }
@@ -129,7 +129,7 @@ export async function updateRecipe(
 
 export async function getRecipesByUserId(userId: number) {
     try {
-        const recipes = await db.select().from(recipesTable).where(eq(recipesTable.userId, userId));
+        const recipes = await db.select().from(recipe).where(eq(recipe.userId, userId));
         // logger.info(`Retrieved ${recipes.length} recipes for user ID: ${userId}`, {
         //     route: '/lib/db',
         //     status: 'success',

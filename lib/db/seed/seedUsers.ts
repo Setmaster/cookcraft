@@ -1,5 +1,5 @@
 ﻿import { drizzle } from 'drizzle-orm/node-postgres';
-import { usersTable } from '../schema';
+import { user } from '../schema';
 // import logger from '../../utils/logger';
 import users from './seedUserData.json';
 
@@ -9,7 +9,7 @@ export async function seedUsers() {
     await db.transaction(async (trx) => {
         try {
             for (const user of users) {
-                await trx.insert(usersTable).values(user);
+                await trx.insert(user).values(user);
             }
             // logger.info('Users have been seeded successfully.', {
             //     status: 'success',

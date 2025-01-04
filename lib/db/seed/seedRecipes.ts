@@ -1,5 +1,5 @@
 ﻿import { drizzle } from 'drizzle-orm/node-postgres';
-import { recipesTable } from '../schema';
+import { recipe } from '../schema';
 // import logger from '../../utils/logger';
 import recipes from './seedRecipesData.json';
 
@@ -10,7 +10,7 @@ export async function seedRecipes() {
         try {
             for (const recipe of recipes) {
                 const { userId, ...recipeData } = recipe;
-                await trx.insert(recipesTable).values({
+                await trx.insert(recipe).values({
                     data: JSON.stringify(recipeData),
                     userId
                 });
