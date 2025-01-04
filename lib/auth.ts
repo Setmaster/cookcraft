@@ -13,7 +13,4 @@ export const auth = betterAuth({
         enabled: true,
     },
     plugins: [nextCookies()],
-    // advanced: {
-    //     generateId: false, // Disable ID generation
-    // },
 });
