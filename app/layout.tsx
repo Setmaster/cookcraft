@@ -4,6 +4,7 @@ import {Notifications} from "@mantine/notifications";
 import {ColorSchemeScript, mantineHtmlProps, MantineProvider} from "@mantine/core";
 import {theme} from "@/theme";
 import '@mantine/core/styles.css';
+import {NavBar} from "@/components/NavBar/NavBar";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,6 +26,7 @@ export default function RootLayout({
     <body>
     <MantineProvider theme={theme}>
       <Notifications/>
+      <NavBar/>
       {children}
     </MantineProvider>
     </body>
