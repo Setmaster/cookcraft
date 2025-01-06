@@ -28,8 +28,8 @@ export function MobileMenu({ session }) {
                 opened={drawerOpened}
                 onClose={() => setDrawerOpened(false)}
                 size="100%"
+                title={"Pages"}
                 padding="md"
-                title="Navigation"
                 hiddenFrom="sm"
                 zIndex={1000000}
             >
@@ -46,13 +46,11 @@ export function MobileMenu({ session }) {
                     <Divider my="sm" />
 
                     <Group justify="center" grow pb="xl" px="md">
-                        {!session ? (
+                        {!session && (
                             <>
                                 <LoginModal />
                                 <SignupModal />
                             </>
-                        ) : (
-                            <Button variant="default" onClick={handleLogout}>Logout</Button>
                         )}
                     </Group>
                 </ScrollArea>

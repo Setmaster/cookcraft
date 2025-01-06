@@ -5,6 +5,8 @@ import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
 import {seedRecipes} from "@/lib/db/seed/seedRecipes";
 import {Recipe} from "@/lib/types/generalTypes";
+import {cookies, headers} from "next/headers";
+import {auth} from "@/lib/auth";
 
 function handleError(actionName: string, error: any) {
     console.error(`Error during ${actionName}:`, error);
@@ -47,11 +49,20 @@ export async function deleteAllUsersA() {
     }
 }
 
-export async function fetchUserRecipes(userId: number): Promise<Recipe[]> {
+export async function fetchUserRecipes(): Promise<Recipe[]> {
     try {
+        const headersList = await headers();
+        const session = await auth.api.getSession({ headers: headersList });
+
+        if (!session) {
+            console.error('User not authenticated');
+            return [];
+        }
+
+        const userId = session.user.id;
+
         const recipesFromDb = await getRecipesByUserId(userId);
-        
-        // Map over the recipes and parse the data field
+
         const recipes: Recipe[] = recipesFromDb.map((recipeRecord) => {
             const data = JSON.parse(recipeRecord.data);
 
@@ -59,7 +70,7 @@ export async function fetchUserRecipes(userId: number): Promise<Recipe[]> {
                 id: recipeRecord.id,
                 userId: recipeRecord.userId,
                 dateCreated: recipeRecord.dateCreated,
-                ...data, // Spread the parsed data properties
+                ...data,
             };
         });
 
@@ -70,8 +81,16 @@ export async function fetchUserRecipes(userId: number): Promise<Recipe[]> {
     }
 }
 
-export async function generateAndSaveRecipe(ingredientsList: string[], userId: number) {
+export async function generateAndSaveRecipe(ingredientsList: string[]) {
     try {
+        const headersList = await headers();
+        const session = await auth.api.getSession({ headers: headersList });
+
+        if (!session) {
+            throw new Error('User not authenticated');
+        }
+
+        const userId = session.user.id;
         const { data: recipeData, error } = await generateRecipeData(ingredientsList);
 
         if (error) {
@@ -91,7 +110,7 @@ export async function generateAndSaveRecipe(ingredientsList: string[], userId: n
             Instructions,
             AdditionalInformation,
         });
-        
+
         await insertNewRecipe(recipeJSON, userId);
 
         return { message: 'Recipe generated and saved successfully' };

@@ -74,17 +74,23 @@ export async function deleteUser(userId: number) {
 }
 
 // Recipes
-export async function insertNewRecipe(recipeData: Recipe['Data'], userId: number) {
-    const recipe = { data: recipeData, userId };
-
-    await executeTransaction(
-        async (trx) => {
-            await trx.insert(recipe).values(recipe);
-        },
-        'Recipe has been added successfully.',
-        'Error adding a recipe',
-        { recipe }
-    );
+export async function insertNewRecipe(recipeJSON: string, userId: number) {
+    try {
+        await executeTransaction(
+            async (trx: any) => {
+                await trx.insert(recipe).values({
+                    userId: userId,
+                    data: recipeJSON,
+                    dateCreated: new Date(),
+                });
+            },
+            'Recipe has been added successfully.',
+            'Error adding a recipe',
+        );
+    } catch (error) {
+        console.error('Error inserting new recipe:', error);
+        throw error;  // Re-throw error after logging
+    }
 }
 
 export async function deleteRecipe(recipeId: number) {

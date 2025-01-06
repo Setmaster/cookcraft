@@ -9,7 +9,6 @@ import {
 } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import classes from './Prompt.module.css';
-import { generateAndSaveRecipe } from '@/lib/actions/dbActions';
 
 interface PromptProps {
     onRecipeGenerated: () => void;
@@ -27,7 +26,21 @@ export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
         setIsSubmitting(true);
 
         try {
-            await generateAndSaveRecipe(value.split(',').map((s) => s.trim()), 1);
+            const response = await fetch('/api/recipes', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    ingredientsList: value.split(',').map((s) => s.trim()),
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Failed to generate recipe');
+            }
+
             console.log('Recipe generated and saved successfully.');
 
             // Clear the input field
