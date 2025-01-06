@@ -19,6 +19,8 @@ import { useForm } from '@mantine/form';
 import { Recipe } from '@/lib/types/generalTypes';
 import { updateRecipeA, deleteRecipeA } from '@/lib/actions/dbActions';
 import { IconTrash } from '@tabler/icons-react';
+import RecipeImage from "@/components/RecipeCard/RecipeImage";
+import classes from './RecipeCard.module.css';
 
 interface RecipeCardProps {
     recipe: Recipe;
@@ -178,6 +180,12 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                 onClick={open}
                 style={{ cursor: 'pointer' }}
             >
+                <Card.Section mb="sm">
+                    <div className={classes.recipeImageContainer}> {/* Wrap RecipeImage */}
+                        <RecipeImage recipe={recipe} />
+                    </div>
+                </Card.Section>
+
                 <Group position="apart" mb="xs">
                     <Title order={4}>{recipe.Title}</Title>
                 </Group>
