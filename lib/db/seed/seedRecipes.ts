@@ -1,6 +1,6 @@
 ﻿import { drizzle } from 'drizzle-orm/node-postgres';
-import { recipesTable } from '../schema';
-import logger from '../../utils/logger';
+import { recipe } from '../schema';
+// import logger from '../../utils/logger';
 import recipes from './seedRecipesData.json';
 
 const db = drizzle(process.env.DATABASE_URL!);
@@ -10,20 +10,20 @@ export async function seedRecipes() {
         try {
             for (const recipe of recipes) {
                 const { userId, ...recipeData } = recipe;
-                await trx.insert(recipesTable).values({
+                await trx.insert(recipe).values({
                     data: JSON.stringify(recipeData),
                     userId
                 });
             }
-            logger.info('Recipes have been seeded successfully.', {
-                status: 'success',
-                timestamp: new Date().toISOString(),
-            });
+            // logger.info('Recipes have been seeded successfully.', {
+            //     status: 'success',
+            //     timestamp: new Date().toISOString(),
+            // });
         } catch (error) {
-            logger.error('Error seeding recipes', {
-                message: error,
-                recipes,
-            });
+            // logger.error('Error seeding recipes', {
+            //     message: error,
+            //     recipes,
+            // });
             throw error;
         }
     });

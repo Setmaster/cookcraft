@@ -6,3 +6,12 @@ npm drizzle-kit migrate
 
 # Update migrations
 npx drizzle-kit push
+
+
+# FAQ
+Why are we using routes mixed with server actions?
+ In Next.js 13 with the App Router, when you invoke
+ a server action from a Client Component, you cannot
+ access the request context. This forces us to use routes
+ for anything that would need request context
+ such as cookies() and headers().
