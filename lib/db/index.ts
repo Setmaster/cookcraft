@@ -31,48 +31,6 @@ async function executeTransaction(
     }
 }
 
-// Users
-export async function getAllUsers() {
-    try {
-        const users = await db.select().from(user);
-        // logger.info('Retrieved users.', {
-        //     route: '/lib/db',
-        //     status: 'success',
-        //     timestamp: new Date().toISOString()
-        // });
-        return users;
-    } catch (error) {
-        // logger.error('Error retrieving users', {
-        //     message: error,
-        //     route: '/lib/db',
-        // });
-        throw error;
-    }
-}
-
-
-
-export async function deleteAllUsers() {
-    await executeTransaction(
-        async (trx) => {
-            await trx.delete(user);
-        },
-        'All users have been deleted successfully.',
-        'Error deleting users'
-    );
-}
-
-export async function deleteUser(userId: number) {
-    await executeTransaction(
-        async (trx) => {
-            await trx.delete(user).where(eq(user.id, userId));
-        },
-        'User has been deleted successfully.',
-        'Error deleting a user',
-        { userId }
-    );
-}
-
 // Recipes
 export async function insertNewRecipe(recipeJSON: string, userId: number) {
     try {

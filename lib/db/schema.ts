@@ -51,4 +51,5 @@ export const recipe = pgTable("recipes", {
     data: text().notNull(),
     userId: text("user_id").notNull().references(() => user.id),
     dateCreated: timestamp('date_created').defaultNow().notNull(),
+    imageUrl: text('image_url')
 });

@@ -1,6 +1,6 @@
 ﻿'use server'
 
-import {getAllUsers, deleteAllUsers, insertNewRecipe, getRecipesByUserId, updateRecipe, deleteRecipe} from "@/lib/db";
+import {insertNewRecipe, getRecipesByUserId, updateRecipe, deleteRecipe} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
 import {seedRecipes} from "@/lib/db/seed/seedRecipes";
@@ -28,24 +28,6 @@ export async function seedRecipesA() {
         return { message: 'Recipes seeded successfully' };
     } catch (error) {
         handleError('seeding recipes', error);
-    }
-}
-
-export async function getAllUsersA() {
-    try {
-        const users = await getAllUsers();
-        return users;
-    } catch (error) {
-        handleError('retrieving users', error);
-    }
-}
-
-export async function deleteAllUsersA() {
-    try {
-        await deleteAllUsers();
-        return {message: 'All users deleted successfully'};
-    } catch (error) {
-        handleError('deleting users', error);
     }
 }
 
