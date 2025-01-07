@@ -21,14 +21,10 @@ export async function NavBar() {
                             <a href="/recipes" className={classes.link}>Recipes</a>
                         )}
                         <a href="/faq" className={classes.link}>FAQ</a>
-                        <a href="/devdashboard" className={classes.link}>Devdashboard</a>
+                        <a href="/about" className={classes.link}>About</a>
                     </Group>
 
-                    {session ? (
-                        <UserMenu user={session.user} />
-                    ) : (
-                        <AuthButtons />
-                    )}
+                    {session ? <UserMenu user={session.user} /> : <AuthButtons />}
 
                     <MobileMenu session={session} />
                 </Group>

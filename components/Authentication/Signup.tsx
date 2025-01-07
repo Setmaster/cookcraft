@@ -1,6 +1,4 @@
-﻿'use client';
-
-import {
+﻿import {
     Anchor,
     Button,
     Container,
@@ -10,17 +8,20 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import { useState } from 'react';
-import { signUp } from '@/lib/auth-client';
+import {useState} from 'react';
+import {signUp} from '@/lib/auth-client';
 import classes from './Signup.module.css';
 
-export function Signup() {
+interface SignupProps {
+    onToggleAuthForm: () => void;
+}
+
+export function Signup({onToggleAuthForm}: SignupProps) {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState('');
-
     const handleSignUp = async () => {
         if (password !== confirmPassword) {
             setError('Passwords do not match');
@@ -28,7 +29,7 @@ export function Signup() {
         }
 
         try {
-            const { data, error } = await signUp.email({ email, password, name });
+            const {data, error} = await signUp.email({email, password, name});
             console.log("info:", email, password, name);
             if (error) throw new Error(error.message);
             // Redirect to recipes page on success
@@ -45,7 +46,7 @@ export function Signup() {
             </Title>
             <Text c="dimmed" size="sm" ta="center" mt={5}>
                 Already have an account?{' '}
-                <Anchor size="sm" component="button">
+                <Anchor size="sm" component="button" onClick={onToggleAuthForm}>
                     Login
                 </Anchor>
             </Text>
