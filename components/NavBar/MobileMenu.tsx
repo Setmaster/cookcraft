@@ -3,12 +3,13 @@
 import { useState } from 'react';
 import { Burger, Drawer, ScrollArea, Divider, Group, Button } from '@mantine/core';
 import classes from './NavBar.module.css';
-import LoginModal from '@/components/Authentication/LoginModal';
-import SignupModal from '@/components/Authentication/SignupModal';
+import { AuthModal } from '@/components/Authentication/AuthModal';
 import { signOut } from '@/lib/auth-client';
 
 export function MobileMenu({ session }) {
     const [drawerOpened, setDrawerOpened] = useState(false);
+    const [authModalOpened, setAuthModalOpened] = useState(false);
+    const [initialForm, setInitialForm] = useState<'login' | 'signup'>('login');
 
     const handleLogout = async () => {
         await signOut({
@@ -20,6 +21,16 @@ export function MobileMenu({ session }) {
         });
     };
 
+    const openLoginModal = () => {
+        setInitialForm('login');
+        setAuthModalOpened(true);
+    };
+
+    const openSignupModal = () => {
+        setInitialForm('signup');
+        setAuthModalOpened(true);
+    };
+
     return (
         <>
             <Burger opened={drawerOpened} onClick={() => setDrawerOpened(!drawerOpened)} hiddenFrom="sm" />
@@ -28,33 +39,55 @@ export function MobileMenu({ session }) {
                 opened={drawerOpened}
                 onClose={() => setDrawerOpened(false)}
                 size="100%"
-                title={"Pages"}
+                title="Pages"
                 padding="md"
                 hiddenFrom="sm"
                 zIndex={1000000}
             >
-                <ScrollArea h="calc(100vh - 80px)" mx="-md">
+                <ScrollArea style={{ height: 'calc(100vh - 80px)' }} mx="-md">
                     <Divider my="sm" />
 
-                    <a href="/" className={classes.link}>Home</a>
+                    <a href="/" className={classes.link}>
+                        Home
+                    </a>
                     {session && (
-                        <a href="/recipes" className={classes.link}>Recipes</a>
+                        <a href="/recipes" className={classes.link}>
+                            Recipes
+                        </a>
                     )}
-                    <a href="/faq" className={classes.link}>FAQ</a>
-                    <a href="/devdashboard" className={classes.link}>Devdashboard</a>
+                    <a href="/faq" className={classes.link}>
+                        FAQ
+                    </a>
+                    <a href="/about" className={classes.link}>
+                        About
+                    </a>
 
                     <Divider my="sm" />
 
-                    <Group justify="center" grow pb="xl" px="md">
-                        {!session && (
+                    <Group position="center" grow pb="xl" px="md">
+                        {!session ? (
                             <>
-                                <LoginModal />
-                                <SignupModal />
+                                <Button variant="default" onClick={openLoginModal}>
+                                    Login
+                                </Button>
+                                <Button variant="default" onClick={openSignupModal}>
+                                    Signup
+                                </Button>
                             </>
+                        ) : (
+                            <Button variant="default" onClick={handleLogout}>
+                                Logout
+                            </Button>
                         )}
                     </Group>
                 </ScrollArea>
             </Drawer>
+
+            <AuthModal
+                opened={authModalOpened}
+                onClose={() => setAuthModalOpened(false)}
+                initialForm={initialForm}
+            />
         </>
     );
 }
