@@ -24,11 +24,7 @@ export async function NavBar() {
                         <a href="/about" className={classes.link}>About</a>
                     </Group>
 
-                    {session ? (
-                        <UserMenu user={session.user} />
-                    ) : (
-                        <AuthButtons />
-                    )}
+                    {session ? <UserMenu user={session.user} /> : <AuthButtons />}
 
                     <MobileMenu session={session} />
                 </Group>
