@@ -2,7 +2,7 @@
 import { IconCheck } from '@tabler/icons-react';
 import { Button, Container, Group, Image, List, Text, ThemeIcon, Title } from '@mantine/core';
 import classes from './AboutHeader.module.css';
-import image from '@/assets/image-placeholder-500x500.jpg';
+import image from '@/assets/craft.webp';
 
 export function AboutHeader() {
     return (
@@ -10,11 +10,10 @@ export function AboutHeader() {
             <div className={classes.inner}>
                 <div className={classes.content}>
                     <Title className={classes.title}>
-                        A <span className={classes.highlight}>modern</span> React <br /> components library
+                    Welcome to <span className={classes.highlight}>CRAFT</span> team! <br /> 
                     </Title>
                     <Text c="dimmed" mt="md">
-                        Build fully functional accessible web applications faster than ever – Mantine includes
-                        more than 120 customizable components and hooks to cover you in any situation
+                    We are a passionate team of three developers dedicated to creating innovative and user-friendly solutions. As co-founders, we bring together a diverse set of skills and experiences to craft products that push the boundaries of what's possible. Let us introduce ourselves:
                     </Text>
 
                     <List
@@ -28,24 +27,18 @@ export function AboutHeader() {
                         }
                     >
                         <List.Item>
-                            <b>TypeScript based</b> – build type safe applications, all components and hooks
-                            export types
+                            <b>Vitor Gomes</b> excels in transforming complex ideas into seamless, user-friendly solutions.
                         </List.Item>
                         <List.Item>
-                            <b>Free and open source</b> – all packages have MIT license, you can use Mantine in
-                            any project
+                            <b>Andrew Lang</b> crafts intuitive, visually stunning interfaces that delight users and drive engagement.
                         </List.Item>
                         <List.Item>
-                            <b>No annoying focus ring</b> – focus ring will appear only when user navigates with
-                            keyboard
+                            <b>Ed Garmash</b> ensures our applications run efficiently delivering robust, high-performance solutions.
                         </List.Item>
                     </List>
-
-                    <Group mt={30}>
-                        <Button variant="default" radius="xl" size="md" className={classes.control}>
-                            Source code
-                        </Button>
-                    </Group>
+                    <Text c="dimmed" mt="md">
+                    Together, we have created CRAFT with a shared vision of delivering high-quality software and providing exceptional customer experiences.
+                    </Text>
                 </div>
                 <Image src={image.src} className={classes.image} />
             </div>

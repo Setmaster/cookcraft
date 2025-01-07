@@ -2,7 +2,7 @@
 import { Avatar, Group, Text } from '@mantine/core';
 import classes from './DevInfo.module.css';
 
-export function DevInfo() {
+export function DevInfoVic() {
     return (
         <div>
             <Group wrap="nowrap">
@@ -17,20 +17,20 @@ export function DevInfo() {
                     </Text>
 
                     <Text fz="lg" fw={500} className={classes.name}>
-                        Robert Glassbreaker
+                    Vitor Gomes
                     </Text>
 
                     <Group wrap="nowrap" gap={10} mt={3}>
                         <IconAt stroke={1.5} size={16} className={classes.icon} />
                         <Text fz="xs" c="dimmed">
-                            robert@glassbreaker.io
+                            victor@graft.io
                         </Text>
                     </Group>
 
                     <Group wrap="nowrap" gap={10} mt={5}>
                         <IconPhoneCall stroke={1.5} size={16} className={classes.icon} />
                         <Text fz="xs" c="dimmed">
-                            +11 (876) 890 56 23
+                            +11 (876) 890 56 21
                         </Text>
                     </Group>
                 </div>
