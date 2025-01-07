@@ -53,7 +53,7 @@ export function UserMenu({ user }) {
                     Account settings
                 </Menu.Item>
                 <Menu.Item>
-                    <Group position="apart" noWrap>
+                    <Group position="apart">
                         <Text size="sm">Dark mode</Text>
                         <Switch
                             checked={dark}
