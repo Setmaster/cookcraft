@@ -21,6 +21,7 @@ export async function NavBar() {
                             <a href="/recipes" className={classes.link}>Recipes</a>
                         )}
                         <a href="/faq" className={classes.link}>FAQ</a>
+                        <a href="/about" className={classes.link}>About</a>
                     </Group>
 
                     {session ? (
