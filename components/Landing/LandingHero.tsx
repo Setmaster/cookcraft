@@ -34,6 +34,7 @@ export default function LandingHero() {
 
                 <Button
                     variant="gradient"
+                    gradient={{ from: '#8B4000' , to: 'var(--mantine-color-blue-filled)', deg: 90 }}
                     size="xl"
                     radius="xl"
                     className={classes.control}
