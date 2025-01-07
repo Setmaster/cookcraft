@@ -37,7 +37,7 @@
 
 .image {
     width: 376px;
-    height: 356px;
+    height: 256px;
 
     @media (max-width: $mantine-breakpoint-md) {
         display: none;
