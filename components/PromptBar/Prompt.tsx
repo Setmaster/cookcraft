@@ -73,10 +73,11 @@ export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
                 onChange={(event) => setValue(event.currentTarget.value)}
                 onKeyDown={handleKeyDown}
                 disabled={isSubmitting}
+                radius="xl"
                 rightSectionWidth={42}
                 rightSection={
                     <ActionIcon
-                        size={32}
+                        size={58}
                         radius="xl"
                         color={theme.primaryColor}
                         variant="filled"
