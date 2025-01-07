@@ -6,14 +6,17 @@ import {
     Menu,
     UnstyledButton,
     Group,
-    Text,
+    Text, useMantineColorScheme, Switch, rem,
 } from '@mantine/core';
-import { IconChevronDown, IconLogout, IconSettings } from '@tabler/icons-react';
+import {IconChevronDown, IconLogout, IconMoonStars, IconSettings, IconSun} from '@tabler/icons-react';
 import { signOut } from '@/lib/auth-client';
 
 export function UserMenu({ user }) {
     const [userMenuOpened, setUserMenuOpened] = useState(false);
 
+    const { colorScheme, toggleColorScheme } = useMantineColorScheme();
+    const dark = colorScheme === 'dark';
+    
     const handleLogout = async () => {
         await signOut({
             fetchOptions: {
@@ -48,6 +51,18 @@ export function UserMenu({ user }) {
                 <Menu.Label>Settings</Menu.Label>
                 <Menu.Item leftSection={<IconSettings size={16} stroke={1.5} />}>
                     Account settings
+                </Menu.Item>
+                <Menu.Item>
+                    <Group position="apart" noWrap>
+                        <Text size="sm">Dark mode</Text>
+                        <Switch
+                            checked={dark}
+                            onChange={() => toggleColorScheme()}
+                            size="md"
+                            onLabel={<IconSun size={rem(16)} stroke={2.5} color="yellow" />}
+                            offLabel={<IconMoonStars size={rem(16)} stroke={2.5} color="blue" />}
+                        />
+                    </Group>
                 </Menu.Item>
                 <Menu.Item
                     leftSection={<IconLogout size={16} stroke={1.5} />}
