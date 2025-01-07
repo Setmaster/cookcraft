@@ -44,6 +44,12 @@
     height: 180px;
     overflow: hidden;
     position: relative;
+    
+    @mixin hover {
+        & img {
+            transform: scale(1.1);
+        }
+    }
 }
 
 .countdown {
