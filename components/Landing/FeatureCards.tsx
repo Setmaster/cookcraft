@@ -1,4 +1,4 @@
-﻿import { IconCookie, IconGauge, IconUser } from '@tabler/icons-react';
+﻿import { IconTrash, IconClockHour12, IconReceipt } from '@tabler/icons-react';
 import {
     Badge,
     Card,
@@ -13,22 +13,22 @@ import classes from './FeatureCards.module.css';
 
 const mockdata = [
     {
-        title: 'Extreme performance',
+        title: 'Save time',
         description:
-            'This dust is actually a powerful poison that will even make a pro wrestler sick, Regice cloaks itself with frigid air of -328 degrees Fahrenheit',
-        icon: IconGauge,
+            "Save your precious time from trying to come up with recipes. There are thousands of recipes out there, you just need the right ingredients.",
+        icon: IconClockHour12,
     },
     {
-        title: 'Privacy focused',
+        title: 'Create new recipes',
         description:
-            'People say it can run at the same speed as lightning striking, Its icy body is so cold, it will not melt even if it is immersed in magma',
-        icon: IconUser,
+            'Try out new recipes you have not tried before. Expand your horizon and find your new favourite recipe',
+        icon: IconReceipt,
     },
     {
-        title: 'No third parties',
+        title: 'Reduce food waste',
         description:
-            'They’re popular, but they’re rare. Trainers who show them off recklessly may be targeted by thieves',
-        icon: IconCookie,
+            "Remember those potatos sitting in the pantry? Or the leftover ground beef nearing its expiry date? Use those in a recipe instead of throwing them out.",
+        icon: IconTrash,
     },
 ];
 
@@ -50,17 +50,16 @@ export function FeaturesCards() {
         <Container size="lg" py="xl">
             <Group justify="center">
                 <Badge variant="filled" size="lg">
-                    Best company ever
+                    Cookcraft
                 </Badge>
             </Group>
 
             <Title order={2} className={classes.title} ta="center" mt="sm">
-                Integrate effortlessly with any technology stack
+                Generate recpies with any ingredients in a single prompt
             </Title>
 
             <Text c="dimmed" className={classes.description} ta="center" mt="md">
-                Every once in a while, you’ll see a Golbat that’s missing some fangs. This happens when
-                hunger drives it to try biting a Steel-type Pokémon.
+                Type your list of ingredients and pass it to Cookcraft. It will generate a list of recipes that you can make with those ingredients.
             </Text>
 
             <SimpleGrid cols={{ base: 1, md: 3 }} spacing="xl" mt={50}>

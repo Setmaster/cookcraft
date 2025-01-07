@@ -10,13 +10,10 @@ export function LandingHero() {
                 zIndex={0}
             />
             <Container className={classes.container} size="md">
-                <Title className={classes.title}>Something something food food food food</Title>
-                <Text className={classes.description} size="xl" mt="xl">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                </Text>
+                <Title className={classes.title}>Got some ingredients sitting around? Ask our AI-powered recipe maker and start making your meal now! </Title>
 
                 <Button variant="gradient" size="xl" radius="xl" className={classes.control}>
-                    Get a new recipe now
+                    Create a recipe now
                 </Button>
             </Container>
         </div>
