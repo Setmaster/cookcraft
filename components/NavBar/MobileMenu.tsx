@@ -64,30 +64,8 @@ export function MobileMenu({ session }) {
 
                     <Divider my="sm" />
 
-                    <Group position="center" grow pb="xl" px="md">
-                        {!session ? (
-                            <>
-                                <Button variant="default" onClick={openLoginModal}>
-                                    Login
-                                </Button>
-                                <Button variant="default" onClick={openSignupModal}>
-                                    Signup
-                                </Button>
-                            </>
-                        ) : (
-                            <Button variant="default" onClick={handleLogout}>
-                                Logout
-                            </Button>
-                        )}
-                    </Group>
                 </ScrollArea>
             </Drawer>
-
-            <AuthModal
-                opened={authModalOpened}
-                onClose={() => setAuthModalOpened(false)}
-                initialForm={initialForm}
-            />
         </>
     );
 }
