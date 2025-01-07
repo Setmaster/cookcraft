@@ -45,7 +45,7 @@ export default function LandingHero() {
                 <AuthModal
                     opened={authModalOpened}
                     onClose={() => setAuthModalOpened(false)}
-                    initialForm="login"
+                    initialForm="signup"
                 />
             </Container>
         </div>
