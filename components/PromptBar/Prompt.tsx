@@ -88,6 +88,7 @@ export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
                         <IconArrowRight size={18} stroke={1.5} />
                     </ActionIcon>
                 }
+                classNames={{ label: classes.centeredLabel }}
             />
         </Container>
     );
