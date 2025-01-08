@@ -1,12 +1,13 @@
 ﻿'use server'
 
-import {insertNewRecipe, getRecipesByUserId, updateRecipe, deleteRecipe} from "@/lib/db";
+import {insertNewRecipe, getRecipesByUserId, updateRecipe, deleteRecipe, getRecipeById} from "@/lib/db";
 import {generateRecipeData} from "@/lib/actions/aiActions";
 import {seedUsers} from "@/lib/db/seed/seedUsers";
 import {seedRecipes} from "@/lib/db/seed/seedRecipes";
 import {Recipe} from "@/lib/types/generalTypes";
 import {cookies, headers} from "next/headers";
 import {auth} from "@/lib/auth";
+import {createRecipeImageA, deleteRecipeImageA} from "@/lib/actions/storageActions";
 
 function handleError(actionName: string, error: any) {
     console.error(`Error during ${actionName}:`, error);
@@ -52,6 +53,7 @@ export async function fetchUserRecipes(): Promise<Recipe[]> {
                 id: recipeRecord.id,
                 userId: recipeRecord.userId,
                 dateCreated: recipeRecord.dateCreated,
+                imageUrl: recipeRecord.imageUrl,
                 ...data,
             };
         });
@@ -85,6 +87,12 @@ export async function generateAndSaveRecipe(ingredientsList: string[]) {
 
         const { Title, Ingredients, Instructions, Description, AdditionalInformation } = recipeData;
 
+        // Use Description as prompt, fallback to Title if necessary
+        const prompt = Description && Description.trim() !== '' ? Description : Title;
+
+        // Generate image and get imageUrl
+        const imageUrl = await createRecipeImageA(prompt);
+
         const recipeJSON = JSON.stringify({
             Title,
             Ingredients,
@@ -92,8 +100,8 @@ export async function generateAndSaveRecipe(ingredientsList: string[]) {
             Instructions,
             AdditionalInformation,
         });
-
-        await insertNewRecipe(recipeJSON, userId);
+        
+        await insertNewRecipe(recipeJSON, userId, imageUrl);
 
         return { message: 'Recipe generated and saved successfully' };
     } catch (error) {
@@ -116,7 +124,18 @@ export async function updateRecipeA(
 
 export async function deleteRecipeA(recipeId: number) {
     try {
+        const recipeRecord = await getRecipeById(recipeId);
+        if (!recipeRecord) {
+            throw new Error('Recipe not found');
+        }
+        const imageUrl = recipeRecord.imageUrl;
+
+        if (imageUrl) {
+            await deleteRecipeImageA(imageUrl);
+        }
+        
         await deleteRecipe(recipeId);
+
         return { message: 'Recipe deleted successfully' };
     } catch (error) {
         handleError('deleting recipe', error);

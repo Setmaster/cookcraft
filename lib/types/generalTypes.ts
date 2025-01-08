@@ -3,6 +3,7 @@
     userId: number;
     Title: string;
     Description: string;
+    imageUrl?: string;
     Ingredients: string[];
     Instructions: string[];
     AdditionalInformation?: {
