@@ -32,7 +32,7 @@ async function executeTransaction(
 }
 
 // Recipes
-export async function insertNewRecipe(recipeJSON: string, userId: number) {
+export async function insertNewRecipe(recipeJSON: string, userId: number, imageUrl: string) {
     try {
         await executeTransaction(
             async (trx: any) => {
@@ -40,6 +40,7 @@ export async function insertNewRecipe(recipeJSON: string, userId: number) {
                     userId: userId,
                     data: recipeJSON,
                     dateCreated: new Date(),
+                    imageUrl: imageUrl,
                 });
             },
             'Recipe has been added successfully.',
@@ -105,6 +106,15 @@ export async function getRecipesByUserId(userId: number) {
         //     message: error,
         //     route: '/lib/db',
         // });
+        throw error;
+    }
+}
+
+export async function getRecipeById(recipeId: number) {
+    try {
+        const [recipeRecord] = await db.select().from(recipe).where(eq(recipe.id, recipeId));
+        return recipeRecord;
+    } catch (error) {
         throw error;
     }
 }

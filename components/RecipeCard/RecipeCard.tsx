@@ -182,7 +182,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
             >
                 <Card.Section mb="sm">
                     <div className={classes.recipeImageContainer}> {/* Wrap RecipeImage */}
-                        <RecipeImage recipe={recipe} />
+                        <RecipeImage imageUrl={recipe.imageUrl} description={recipe.Description}/>
                     </div>
                 </Card.Section>
 

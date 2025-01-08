@@ -2,6 +2,10 @@
 
 import {GoogleGenerativeAI, SchemaType} from "@google/generative-ai";
 import {Recipe} from "@/lib/types/generalTypes";
+import { PredictionServiceClient } from '@google-cloud/aiplatform';
+import { helpers } from '@google-cloud/aiplatform';
+import { uploadBufferToGCS } from '../storage';
+import { v4 as uuidv4 } from 'uuid';
 
 // Define the JSON schema for the recipe
 const recipeDataSchema = {
@@ -156,5 +160,73 @@ Please create a similar recipe using the ingredients provided.
     } catch (error) {
         console.error("Error generating recipe data:", error);
         return { error: (error as Error).message, data: null };
+    }
+}
+
+export async function generateAndSaveRecipeImage(prompt: string): Promise<string> {
+    const projectId = process.env.GOOGLE_PROJECT_ID;
+    const location = 'us-central1'; // Replace with your preferred location
+    
+    const clientOptions = {
+        apiEndpoint: `${location}-aiplatform.googleapis.com`,
+        projectId: projectId,
+        credentials: {
+            client_email: process.env.GOOGLE_CLIENT_EMAIL,
+            private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        },
+    };
+    
+    const predictionServiceClient = new PredictionServiceClient(clientOptions);
+
+    // Define model endpoint
+    const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-generate-001`;
+
+    // Define request payload
+    const instance = {
+        prompt: prompt,
+    };
+    const instanceValue = helpers.toValue(instance);
+    const instances = [instanceValue];
+
+    const parameters = helpers.toValue({
+        sampleCount: 1,
+    });
+
+    const request = {
+        endpoint: endpoint,
+        instances: instances,
+        parameters: parameters,
+    };
+
+    try {
+        // gen image
+        const [response] = await predictionServiceClient.predict(request);
+        const predictions = response.predictions;
+
+        if (predictions.length === 0) {
+            throw new Error('No image was generated. Check the request parameters and prompt.');
+        } else {
+            // Get image
+            const prediction = predictions[0];
+            const base64Image = prediction.structValue.fields.bytesBase64Encoded.stringValue;
+
+            // Convert base64-encoded image to a Buffer
+            const imageBuffer = Buffer.from(base64Image, 'base64');
+
+            // Gen unique name for the image
+            const filename = `recipe-images/${uuidv4()}.png`;
+
+            // Define bucket
+            const bucketName = 'cookcraft-ai-images';
+            const contentType = 'image/png';
+
+            // Upload the image
+            const imageUrl = await uploadBufferToGCS(imageBuffer, filename, bucketName, contentType);
+
+            // Return image's public URL
+            return imageUrl;
+        }
+    } catch (error) {
+        throw new Error(`Failed to generate and save image: ${error}`);
     }
 }

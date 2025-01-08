@@ -5,13 +5,16 @@ import classes from './RecipeImage.module.css';
 import {useState} from "react";
 import {LoadingOverlay} from "@mantine/core";
 
-// type RecipeImageProps = {
-//    
-// };
+interface RecipeImageProps {
+    imageUrl?: string;
+    description: string;
+}
 
-export default function RecipeImage() {
+export default function RecipeImage({ imageUrl, description }: RecipeImageProps) {
     const [isLoading, setIsLoading] = useState(true);
-
+    console.log('RecipeImage imageUrl:', imageUrl);
+    const defaultImageUrl =
+        'https://images.unsplash.com/photo-1562923690-e274ba919781?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D';
 
     return (
         <>
@@ -23,8 +26,8 @@ export default function RecipeImage() {
             />
             <Image
                 className={classes.saleImage}
-                src={"https://images.unsplash.com/photo-1562923690-e274ba919781?q=80&w=1976&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"}
-                alt={``}
+                src={imageUrl || defaultImageUrl}
+                alt={description}
                 fill
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 style={{ objectFit: 'cover', objectPosition: 'center' }}
