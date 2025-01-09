@@ -69,13 +69,13 @@ export async function updateRecipe(
 ) {
     await executeTransaction(
         async (trx) => {
-            const [recipe] = await trx
+            const [existingRecipe] = await trx
                 .select()
                 .from(recipe)
                 .where(eq(recipe.id, recipeId));
 
-            if (recipe) {
-                const existingData = JSON.parse(recipe.data);
+            if (existingRecipe) {
+                const existingData = JSON.parse(existingRecipe.data);
                 const newData = { ...existingData, ...updatedData };
 
                 await trx
