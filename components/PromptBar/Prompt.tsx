@@ -6,6 +6,7 @@ import {
     Container,
     TextInput,
     useMantineTheme,
+    Loader,
 } from '@mantine/core';
 import { IconArrowRight } from '@tabler/icons-react';
 import classes from './Prompt.module.css';
@@ -74,7 +75,7 @@ export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
                 onKeyDown={handleKeyDown}
                 disabled={isSubmitting}
                 radius="xl"
-                rightSectionWidth={42}
+                rightSectionWidth={60}
                 rightSection={
                     <ActionIcon
                         size={58}
@@ -85,7 +86,11 @@ export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
                         disabled={isSubmitting}
                         className={classes.promptButton}
                     >
-                        <IconArrowRight size={18} stroke={1.5} />
+                        {isSubmitting ? (
+                            <Loader size={28} color="blue" />
+                        ) : (
+                            <IconArrowRight size={18} stroke={1.5} />
+                        )}
                     </ActionIcon>
                 }
                 classNames={{ label: classes.centeredLabel }}
