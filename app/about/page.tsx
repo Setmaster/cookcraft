@@ -11,19 +11,19 @@ export default function AboutPage() {
                     name="Vitor Gomes"
                     email="victor@craft.io"
                     phone="+11 (876) 890 56 21"
-                    imageUrl="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
+                    imageUrl="https://i.imgur.com/HVOs3rp.png"
                 />
                 <DevInfo
                     name="Andrew Lang"
                     email="andrew@craft.io"
                     phone="+11 (876) 890 56 22"
-                    imageUrl="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
+                    imageUrl="https://i.imgur.com/sKJus1t.jpeg"
                 />
                 <DevInfo
                     name="Ed Garmash"
                     email="ed@craft.io"
                     phone="+11 (876) 890 56 23"
-                    imageUrl="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png"
+                    imageUrl="https://i.imgur.com/0QZBlaG.png"
                 />
             </SimpleGrid>
         </Container>
