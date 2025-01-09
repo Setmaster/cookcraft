@@ -13,7 +13,7 @@ import {
     Textarea,
     Stack,
     ActionIcon,
-    Divider
+    Divider, Image
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { Recipe } from '@/lib/types/generalTypes';
@@ -209,6 +209,13 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                     {!isEditing ? (
                         <>
                             {/* View Mode */}
+                            <div className={classes.recipeViewImageContainer}>
+                                <Image
+                                    className={classes.recipeViewImage}
+                                    radius="md"
+                                    src={recipe.imageUrl}
+                                />
+                            </div>
                             {/* Ingredients Section */}
                             <Title order={5}>Ingredients</Title>
                             {recipe.Ingredients && recipe.Ingredients.length > 0 ? (
@@ -255,7 +262,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                         <>
                             {/* Edit Mode */}
                             <form onSubmit={form.onSubmit(handleSubmit)}>
-                                <Stack spacing="md">
+                            <Stack spacing="md">
                                     {/* Title Input */}
                                     <TextInput
                                         label="Title"

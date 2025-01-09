@@ -58,3 +58,13 @@
     right: rem(12px);
     pointer-events: none;
 }
+
+.recipeViewImageContainer {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+.recipeViewImage {
+    width: 50%;
+}
