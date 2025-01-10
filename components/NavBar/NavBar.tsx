@@ -10,7 +10,6 @@ export async function NavBar() {
     const session = await auth.api.getSession({
         headers: await headers(),
     });
-
     return (
         <Box pb={0}>
             <header className={classes.header}>
