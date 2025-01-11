@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# **COOKCRAFT**
 
-## Getting Started
+---
 
-First, run the development server:
+## **Table of Contents**
+1. [Overview](#overview)
+2. [Features](#features)
+3. [Settings](#settings)
+4. [Usage](#usage)
+5. [Dependencies](#dependencies)
+6. [License](#license)
+7. [Contact](#contact)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## **Overview**
+This project is a web application built with Next.js and Node.js, designed to help users find recipes based on the ingredients they have at home. The app leverages an AI model to suggest recipes tailored to those ingredients.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## **Features** 
+- User registration and authentication.
+- Search recipes using comma-separated ingredients.
+- Manage personal recipes.
+- Frequently Asked Questions (FAQ) section.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## **Settings**
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create the `.env` by using `.env.example` as a reference: `cp .env.example .env`
+2. Update the .env file with your correct local information 
+    - DATABASE_URL: your database host address
+    - POSTGRES_USER: your database user
+    - POSTGRES_PASSWORD: your database password
+    - POSTGRES_DB: your database name
+    - DB_PORT: your database port
+    - DATABASE_URL: your database URL (eg. postgres://user:password@host:port/db_name)
+    - BETTER_AUTH_SECRET: you encryption key for user authentication 
+    - BETTER_AUTH_URL: your web app root URL
+    - GOOGLE_PROJECT_ID:  your google cloud ID
+    - GOOGLE_PRIVATE_KEY: your google authentication for the google project 
+    - GOOGLE_CLIENT_EMAIL: your user for authentication  
+3. Install dependencies: `npm i`
+4. Run the development server: npm run dev
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## Learn More
+## **Dependencies**
 
-To learn more about Next.js, take a look at the following resources:
+- Node 20.x or above
+- NPM 5.x or above
+- PG 8.x
+- Typesctipt 5.x
+- Next 15.x
+- Drizzle ORM 0.38
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## **Usage**
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](https://github.com/user-attachments/assets/cd4c2c19-eec2-4b63-b1a8-cf576747de10)
 
-## Deploy on Vercel
+## **License** 
+TBA
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## **Contact**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+info@craft.io
