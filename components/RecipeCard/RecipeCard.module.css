@@ -66,5 +66,6 @@
 }
 
 .recipeViewImage {
-    width: 50%;
+    flex: 0 0 auto;
+    max-width: 50%;
 }
