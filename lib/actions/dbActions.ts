@@ -1,35 +1,24 @@
-﻿'use server'
+﻿'use server';
 
-import {insertNewRecipe, getRecipesByUserId, updateRecipe, deleteRecipe, getRecipeById} from "@/lib/db";
-import {generateRecipeData} from "@/lib/actions/aiActions";
-import {seedUsers} from "@/lib/db/seed/seedUsers";
-import {seedRecipes} from "@/lib/db/seed/seedRecipes";
-import {Recipe} from "@/lib/types/generalTypes";
-import {cookies, headers} from "next/headers";
-import {auth} from "@/lib/auth";
-import {createRecipeImageA, deleteRecipeImageA} from "@/lib/actions/storageActions";
+import {
+    insertNewRecipe,
+    getRecipesByUserId,
+    updateRecipe,
+    deleteRecipe,
+    getRecipeById,
+} from '@/lib/db';
+import { generateRecipeData } from '@/lib/actions/aiActions';
+import { Recipe } from '@/lib/types/generalTypes';
+import { headers } from 'next/headers';
+import { auth } from '@/lib/auth';
+import {
+    createRecipeImageA,
+    deleteRecipeImageA,
+} from '@/lib/actions/storageActions';
 
-function handleError(actionName: string, error: any) {
+function handleError(actionName: string, error: unknown) {
     console.error(`Error during ${actionName}:`, error);
     throw new Error(`Error during ${actionName}`);
-}
-
-export async function seedUsersA() {
-    try {
-        await seedUsers();
-        return {message: 'Users seeded successfully'};
-    } catch (error) {
-        handleError('seeding users', error);
-    }
-}
-
-export async function seedRecipesA() {
-    try {
-        await seedRecipes();
-        return { message: 'Recipes seeded successfully' };
-    } catch (error) {
-        handleError('seeding recipes', error);
-    }
 }
 
 export async function fetchUserRecipes(): Promise<Recipe[]> {
@@ -85,7 +74,13 @@ export async function generateAndSaveRecipe(ingredientsList: string[]) {
             throw new Error('No recipe generated');
         }
 
-        const { Title, Ingredients, Instructions, Description, AdditionalInformation } = recipeData;
+        const {
+            Title,
+            Ingredients,
+            Instructions,
+            Description,
+            AdditionalInformation,
+        } = recipeData;
 
         // Use Description as prompt, fallback to Title if necessary
         const prompt = Description && Description.trim() !== '' ? Description : Title;
@@ -100,19 +95,19 @@ export async function generateAndSaveRecipe(ingredientsList: string[]) {
             Instructions,
             AdditionalInformation,
         });
-        
+
         await insertNewRecipe(recipeJSON, userId, imageUrl);
 
         return { message: 'Recipe generated and saved successfully' };
     } catch (error) {
         console.error('Error generating and saving recipe:', error);
-        throw error;  // Re-throw error after logging
+        throw error; // Re-throw error after logging
     }
 }
 
 export async function updateRecipeA(
     recipeId: number,
-    updatedData: Partial<Recipe['Data']>
+    updatedData: Partial<Recipe>
 ) {
     try {
         await updateRecipe(recipeId, updatedData);
@@ -133,7 +128,7 @@ export async function deleteRecipeA(recipeId: number) {
         if (imageUrl) {
             await deleteRecipeImageA(imageUrl);
         }
-        
+
         await deleteRecipe(recipeId);
 
         return { message: 'Recipe deleted successfully' };

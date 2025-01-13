@@ -11,7 +11,7 @@ import {
 import {IconChevronDown, IconLogout, IconMoonStars, IconSettings, IconSun} from '@tabler/icons-react';
 import { signOut } from '@/lib/auth-client';
 
-export function UserMenu({ user }) {
+export function UserMenu({ user }  : { user: any }) {
     const [userMenuOpened, setUserMenuOpened] = useState(false);
 
     const { colorScheme, toggleColorScheme } = useMantineColorScheme();

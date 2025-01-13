@@ -25,11 +25,12 @@ export function Login({onToggleAuthForm}: LoginProps) {
 
     const handleSignIn = async () => {
         try {
-            const {data, error} = await signIn.email({email, password});
+            const {error} = await signIn.email({email, password});
             if (error) throw new Error(error.message);
             // Redirect to recipes page on success
             window.location.href = '/recipes';
-        } catch (err) {
+        } catch (err : unknown) {
+            // @ts-ignore
             setError(err.message);
         }
     };

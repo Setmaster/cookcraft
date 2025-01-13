@@ -1,41 +1,32 @@
 ﻿import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
-import { user, recipe } from './schema';
+import { recipe } from './schema';
 import { eq } from 'drizzle-orm';
-// import { validateString } from '@/lib/utils/indexHelpers';
-// import logger from '@/lib/utils/logger';
-import { Recipe } from '@/lib/types/generalTypes';
+import type { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import {Recipe} from "@/lib/types/generalTypes";
 
 export const db = drizzle(process.env.DATABASE_URL!);
 
-// Helper function for transaction and logging
+// Helper function for transaction
 async function executeTransaction(
-    action: (trx: any) => Promise<void>,
+    action: (trx: NodePgDatabase) => Promise<void>,
     successMessage: string,
-    errorMessage: string,
-    additionalInfo: object = {}
+    errorMessage: string
 ) {
     try {
         await db.transaction(action);
-        // logger.info(successMessage, {
-        //     ...additionalInfo,
-        //     status: 'success',
-        //     timestamp: new Date().toISOString()
-        // });
+        console.log(successMessage);
     } catch (error) {
-        // logger.error(errorMessage, {
-        //     message: error,
-        //     ...additionalInfo
-        // });
+        console.error(errorMessage, error);
         throw error;
     }
 }
 
 // Recipes
-export async function insertNewRecipe(recipeJSON: string, userId: number, imageUrl: string) {
+export async function insertNewRecipe(recipeJSON: string, userId: string, imageUrl: string) {
     try {
         await executeTransaction(
-            async (trx: any) => {
+            async (trx: NodePgDatabase) => {
                 await trx.insert(recipe).values({
                     userId: userId,
                     data: recipeJSON,
@@ -44,38 +35,37 @@ export async function insertNewRecipe(recipeJSON: string, userId: number, imageU
                 });
             },
             'Recipe has been added successfully.',
-            'Error adding a recipe',
+            'Error adding a recipe'
         );
     } catch (error) {
         console.error('Error inserting new recipe:', error);
-        throw error;  // Re-throw error after logging
+        throw error; // Re-throw error after logging
     }
 }
 
 export async function deleteRecipe(recipeId: number) {
     await executeTransaction(
-        async (trx) => {
+        async (trx: NodePgDatabase) => {
             await trx.delete(recipe).where(eq(recipe.id, recipeId));
         },
         'Recipe has been deleted successfully.',
-        'Error deleting a recipe',
-        { recipeId }
+        'Error deleting a recipe'
     );
 }
 
 export async function updateRecipe(
     recipeId: number,
-    updatedData: Partial<Recipe['Data']>
+    updatedData: Partial<Recipe>
 ) {
     await executeTransaction(
-        async (trx) => {
+        async (trx: NodePgDatabase) => {
             const [existingRecipe] = await trx
                 .select()
                 .from(recipe)
                 .where(eq(recipe.id, recipeId));
 
             if (existingRecipe) {
-                const existingData = JSON.parse(existingRecipe.data);
+                const existingData = JSON.parse(existingRecipe.data) as Recipe;
                 const newData = { ...existingData, ...updatedData };
 
                 await trx
@@ -87,25 +77,15 @@ export async function updateRecipe(
             }
         },
         'Recipe updated successfully.',
-        'Error updating the recipe.',
-        { recipeId }
+        'Error updating the recipe.'
     );
 }
 
-export async function getRecipesByUserId(userId: number) {
+export async function getRecipesByUserId(userId: string) {
     try {
         const recipes = await db.select().from(recipe).where(eq(recipe.userId, userId));
-        // logger.info(`Retrieved ${recipes.length} recipes for user ID: ${userId}`, {
-        //     route: '/lib/db',
-        //     status: 'success',
-        //     timestamp: new Date().toISOString()
-        // });
         return recipes;
     } catch (error) {
-        // logger.error('Error retrieving recipes', {
-        //     message: error,
-        //     route: '/lib/db',
-        // });
         throw error;
     }
 }

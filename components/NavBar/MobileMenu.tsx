@@ -1,35 +1,11 @@
 ﻿'use client';
 
 import { useState } from 'react';
-import { Burger, Drawer, ScrollArea, Divider, Group, Button } from '@mantine/core';
+import { Burger, Drawer, ScrollArea, Divider } from '@mantine/core';
 import classes from './NavBar.module.css';
-import { AuthModal } from '@/components/Authentication/AuthModal';
-import { signOut } from '@/lib/auth-client';
 
-export function MobileMenu({ session }) {
+export function MobileMenu({ session } : { session: any }) {
     const [drawerOpened, setDrawerOpened] = useState(false);
-    const [authModalOpened, setAuthModalOpened] = useState(false);
-    const [initialForm, setInitialForm] = useState<'login' | 'signup'>('login');
-
-    const handleLogout = async () => {
-        await signOut({
-            fetchOptions: {
-                onSuccess: () => {
-                    window.location.href = '/';
-                },
-            },
-        });
-    };
-
-    const openLoginModal = () => {
-        setInitialForm('login');
-        setAuthModalOpened(true);
-    };
-
-    const openSignupModal = () => {
-        setInitialForm('signup');
-        setAuthModalOpened(true);
-    };
 
     return (
         <>

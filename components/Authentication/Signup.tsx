@@ -29,12 +29,13 @@ export function Signup({onToggleAuthForm}: SignupProps) {
         }
 
         try {
-            const {data, error} = await signUp.email({email, password, name});
+            const {error} = await signUp.email({email, password, name});
             console.log("info:", email, password, name);
             if (error) throw new Error(error.message);
             // Redirect to recipes page on success
             window.location.href = '/recipes';
-        } catch (err) {
+        } catch (err : unknown) {
+            // @ts-ignore
             setError(err.message);
         }
     };

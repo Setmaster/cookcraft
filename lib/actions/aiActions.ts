@@ -1,11 +1,12 @@
-﻿"use server";
+﻿'use server';
 
 import {GoogleGenerativeAI, SchemaType} from "@google/generative-ai";
 import {Recipe} from "@/lib/types/generalTypes";
-import { PredictionServiceClient } from '@google-cloud/aiplatform';
+import {PredictionServiceClient, protos} from '@google-cloud/aiplatform';
 import { helpers } from '@google-cloud/aiplatform';
 import { uploadBufferToGCS } from '../storage';
 import { v4 as uuidv4 } from 'uuid';
+import { google } from '@google-cloud/aiplatform/build/protos/protos';
 
 // Define the JSON schema for the recipe
 const recipeDataSchema = {
@@ -75,7 +76,7 @@ const recipeDataSchema = {
 };
 
 // Initialize AI using the API key
-const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY);
+const genAI = new GoogleGenerativeAI(process.env.AI_API_KEY!);
 
 export async function generateRecipeData(
     ingredientsList: string[]
@@ -148,11 +149,11 @@ Please create a similar recipe using the ingredients provided.
 
         if (!recipeDataObj.AdditionalInformation) {
             recipeDataObj.AdditionalInformation = {
-                PrepTime: null,
-                CookTime: null,
-                TotalTime: null,
-                Yield: null,
-                CaloriesPerServing: null,
+                PrepTime: undefined,
+                CookTime: undefined,
+                TotalTime: undefined,
+                Yield: undefined,
+                CaloriesPerServing: undefined,
             };
         }
 
@@ -165,14 +166,14 @@ Please create a similar recipe using the ingredients provided.
 
 export async function generateAndSaveRecipeImage(prompt: string): Promise<string> {
     const projectId = process.env.GOOGLE_PROJECT_ID;
-    const location = 'us-central1'; // Replace with your preferred location
+    const location = 'us-central1';
     
     const clientOptions = {
         apiEndpoint: `${location}-aiplatform.googleapis.com`,
         projectId: projectId,
         credentials: {
             client_email: process.env.GOOGLE_CLIENT_EMAIL,
-            private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+            private_key: process.env.GOOGLE_PRIVATE_KEY!.replace(/\\n/g, '\n'),
         },
     };
     
@@ -181,51 +182,62 @@ export async function generateAndSaveRecipeImage(prompt: string): Promise<string
     // Define model endpoint
     const endpoint = `projects/${projectId}/locations/${location}/publishers/google/models/imagen-3.0-generate-001`;
 
-    // Define request payload
-    const instance = {
-        prompt: prompt,
-    };
+    // Build instances
+    const instance = { prompt: prompt };
     const instanceValue = helpers.toValue(instance);
-    const instances = [instanceValue];
 
-    const parameters = helpers.toValue({
-        sampleCount: 1,
-    });
+    if (!instanceValue) {
+        throw new Error('Failed to convert instance to IValue');
+    }
 
-    const request = {
+    const instances: google.protobuf.IValue[] = [instanceValue];
+
+    // Build parameters
+    const parametersObject = { sampleCount: 1 };
+    const parametersValue = helpers.toValue(parametersObject);
+
+    if (!parametersValue) {
+        throw new Error('Failed to convert parameters to IValue');
+    }
+
+    const request: protos.google.cloud.aiplatform.v1beta1.IPredictRequest = {
         endpoint: endpoint,
         instances: instances,
-        parameters: parameters,
+        parameters: parametersValue,
     };
 
     try {
-        // gen image
+        // Generate image
         const [response] = await predictionServiceClient.predict(request);
-        const predictions = response.predictions;
 
-        if (predictions.length === 0) {
+        if (!response.predictions || response.predictions.length === 0) {
             throw new Error('No image was generated. Check the request parameters and prompt.');
-        } else {
-            // Get image
-            const prediction = predictions[0];
-            const base64Image = prediction.structValue.fields.bytesBase64Encoded.stringValue;
-
-            // Convert base64-encoded image to a Buffer
-            const imageBuffer = Buffer.from(base64Image, 'base64');
-
-            // Gen unique name for the image
-            const filename = `recipe-images/${uuidv4()}.png`;
-
-            // Define bucket
-            const bucketName = 'cookcraft-ai-images';
-            const contentType = 'image/png';
-
-            // Upload the image
-            const imageUrl = await uploadBufferToGCS(imageBuffer, filename, bucketName, contentType);
-
-            // Return image's public URL
-            return imageUrl;
         }
+
+        // Get image
+        const prediction = response.predictions[0];
+        const base64Image = prediction.structValue?.fields?.bytesBase64Encoded?.stringValue;
+
+        if (!base64Image) {
+            throw new Error('Failed to extract the image from the response.');
+        }
+
+        // Convert base64-encoded image to a Buffer
+        const imageBuffer = Buffer.from(base64Image, 'base64');
+
+        // Generate unique name for the image
+        const filename = `recipe-images/${uuidv4()}.png`;
+
+        // Define bucket
+        const bucketName = 'cookcraft-ai-images';
+        const contentType = 'image/png';
+
+        // Upload the image
+        const imageUrl = await uploadBufferToGCS(imageBuffer, filename, bucketName, contentType);
+
+
+        // Return image's public URL
+            return imageUrl;
     } catch (error) {
         throw new Error(`Failed to generate and save image: ${error}`);
     }

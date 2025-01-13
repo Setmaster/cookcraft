@@ -4,8 +4,13 @@ import { useState } from 'react';
 import { Prompt } from "@/components/PromptBar/Prompt";
 import Listings from "@/components/Recipes/Listings";
 import { Space } from "@mantine/core";
+import {Recipe} from "@/lib/types/generalTypes";
 
-export default function RecipesPageClient({ initialRecipes }) {
+interface RecipesPageClientProps {
+    initialRecipes: Recipe[];
+}
+
+export default function RecipesPageClient({ initialRecipes }: RecipesPageClientProps) {
     const [recipes, setRecipes] = useState(initialRecipes);
 
     const refreshRecipes = async () => {

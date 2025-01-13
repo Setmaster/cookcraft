@@ -1,6 +1,6 @@
 ﻿'use client';
 import { IconCheck } from '@tabler/icons-react';
-import { Button, Container, Group, Image, List, Text, ThemeIcon, Title } from '@mantine/core';
+import { Container, Image, List, Text, ThemeIcon, Title } from '@mantine/core';
 import classes from './AboutHeader.module.css';
 import image from '@/assets/craft.webp';
 
