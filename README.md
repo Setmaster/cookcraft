@@ -50,10 +50,7 @@ This project is a web application built with Next.js and Node.js, designed to he
 
 ## **Usage**
 
-<video width="640" height="360" controls>
-  <source src="https://github.com/user-attachments/assets/0ac73fd1-eb96-4c74-bc71-c290b5b6ca1c" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](https://github.com/user-attachments/assets/0ac73fd1-eb96-4c74-bc71-c290b5b6ca1c)
 
 ## **License** 
 TBA
