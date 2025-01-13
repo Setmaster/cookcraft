@@ -50,7 +50,7 @@ This project is a web application built with Next.js and Node.js, designed to he
 
 ## **Usage**
 
-[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](./assets/demo.mp4)
+[![Live Demo](https://img.shields.io/badge/demo-online-brightgreen)](https://github.com/user-attachments/assets/0ac73fd1-eb96-4c74-bc71-c290b5b6ca1c)
 
 ## **License** 
 TBA
