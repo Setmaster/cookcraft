@@ -31,6 +31,12 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [deleteModalOpen, setDeleteModalOpen] = useState(false); // State for delete modal
 
+    function formatKey(key) {
+        let formattedKey = key.replace(/([A-Z])/g, ' $1').trim();
+        formattedKey = formattedKey.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+        return formattedKey;
+    }
+    
     // Initialize the form with existing recipe data
     const form = useForm({
         initialValues: {
@@ -199,7 +205,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                 opened={opened}
                 onClose={handleModalClose}
                 title={isEditing ? 'Edit Recipe' : recipe.Title}
-                size="xl" // Increased size from 'lg' to 'xl'
+                size="xl"
                 overlayProps={{
                     opacity: 0.55,
                     blur: 3,
@@ -251,7 +257,7 @@ export default function RecipeCard({ recipe }: RecipeCardProps) {
                                     {Object.entries(recipe.AdditionalInformation).map(
                                         ([key, value]) => (
                                             <Text key={key}>
-                                                <strong>{key}:</strong> {value}
+                                                <strong>{formatKey(key)}:</strong> {value}
                                             </Text>
                                         )
                                     )}
