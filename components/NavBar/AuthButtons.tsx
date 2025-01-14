@@ -24,7 +24,7 @@ export function AuthButtons() {
                     Login
                 </Button>
                 <Button variant="default" onClick={openSignupModal}>
-                    Signup
+                    Sign Up
                 </Button>
             </Group>
 

@@ -38,7 +38,7 @@ export function Login({onToggleAuthForm}: LoginProps) {
     return (
         <Container size={420} my={40}>
             <Title ta="center" className={classes.title}>
-                Welcome back!
+                Welcome!
             </Title>
             <Text c="dimmed" size="sm" ta="center" mt={5}>
                 Do not have an account yet?{' '}

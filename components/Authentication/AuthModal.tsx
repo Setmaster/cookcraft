@@ -1,5 +1,5 @@
 ﻿'use client';
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Modal } from '@mantine/core';
 import { Login } from './Login';
 import { Signup } from './Signup';
@@ -13,6 +13,10 @@ interface AuthModalProps {
 export function AuthModal({ opened, onClose, initialForm = 'login' }: AuthModalProps) {
     const [authForm, setAuthForm] = useState<'login' | 'signup'>(initialForm);
 
+    useEffect(() => {
+        setAuthForm(initialForm);
+    }, [initialForm]);
+    
     const handleToggleForm = () => {
         setAuthForm((prev) => (prev === 'login' ? 'signup' : 'login'));
     };
