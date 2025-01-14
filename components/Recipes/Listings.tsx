@@ -11,7 +11,7 @@ interface ListingsProps {
 export default function Listings({ recipes }: ListingsProps) {
     return (
         <Container fluid>
-            <SimpleGrid cols={3} spacing="lg">
+            <SimpleGrid cols={{base: 1, sm: 3}} spacing="lg">
                 {recipes.map((recipe) => (
                     <RecipeCard key={recipe.id} recipe={recipe} />
                 ))}
