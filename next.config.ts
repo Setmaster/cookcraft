@@ -15,6 +15,7 @@ const nextConfig: NextConfig = {
     typescript: {
         ignoreBuildErrors: true,
     },
+    responseLimit: false,
 };
 
 export default nextConfig;

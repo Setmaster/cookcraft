@@ -39,12 +39,13 @@ export const Prompt = ({ onRecipeGenerated }: PromptProps) => {
 
             if (!response.ok) {
                 let errorMessage = 'Failed to generate recipe';
+                
+                const errorText = await response.text();
 
                 try {
-                    const errorData = await response.json();
+                    const errorData = JSON.parse(errorText);
                     errorMessage = errorData.error || errorMessage;
                 } catch {
-                    const errorText = await response.text();
                     errorMessage = errorText || errorMessage;
                 }
                 throw new Error(errorMessage);
